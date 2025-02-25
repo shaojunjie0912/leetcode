@@ -8,15 +8,28 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-    // NOTE: 数组中只有一种数出现次数少于 m 次,
-    // 其他数都出现了 m 次
-    int singleNumber(vector<int>& nums) {}
-
+    int singleNumber(vector<int>& nums) {
+        return Find(nums, 3);
+    }
     int Find(vector<int>& nums, int m) {
-        // 统计每位 1 的个数总和
-        // cnts[i] : i 位上有多少个 1
+        // cnts[i]: 所有数在 i 位置上的 1 个数之和
         int cnts[32]{};
+        for (auto num : nums) {
+            for (int i = 0; i < 32; ++i) {
+                // NOTE: 右移妙用
+                cnts[i] += (num >> i) & 1;  // 统计每一位上是否为 1
+            }
+        }
         int ans{0};
+        for (int i = 0; i < 32; ++i) {
+            // 如果对应位的 1 总数无法被 m 整除, 则是出现 k 次的
+            // 则该位应该是 1
+            if (cnts[i] % m != 0) {
+                // NOTE: 左移妙用
+                ans |= 1 << i;
+            }
+        }
+        return ans;
     }
 };
 // @leet end

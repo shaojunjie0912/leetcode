@@ -33,7 +33,8 @@ public:
         // 1.
         // return ((set_[num / 32] >> (num % 32)) & 1) == 1;  // 右移 num%32 再与 1是否等于1
         // 2.
-        return (set_[num / 32] & (1 << (num % 32))) != 0;  //
+        // NOTE: 只能用 !=0 判断当前bit是否为1, 不能用==1, 因为当前bit可能在中间
+        return (set_[num / 32] & (1 << (num % 32))) != 0;
     }
 
 private:

@@ -69,9 +69,15 @@ void SortNoRec(vector<int>& arr) {
 // 随机快速排序
 namespace quick_sort {
 
-int Random(int min, int max) {
-    std::mt19937 gen{std::random_device{}()};
-    std::uniform_int_distribution<int> dist{min, max};
+int RandomInt(int min, int max) {
+    static std::mt19937 gen{std::random_device{}()};  // 静态随机数引擎
+    static std::uniform_int_distribution<int> dist{min, max};
+    return dist(gen);
+}
+
+double RandomDouble(double min, double max) {
+    static std::mt19937 gen{std::random_device{}()};  // 静态随机数引擎
+    static std::uniform_real_distribution<double> dist{min, max};
     return dist(gen);
 }
 
@@ -104,7 +110,7 @@ void SortNoOp(vector<int>& arr, int l, int r) {
     if (l >= r) {
         return;
     }
-    int x = arr[Random(l, r)];  // 随机选取一个元素 x
+    int x = arr[RandomInt(l, r)];  // 随机选取一个元素 x
     int mid = PartitionNoOp(arr, l, r, x);
     SortNoOp(arr, l, mid - 1);
     SortNoOp(arr, mid + 1, r);
@@ -145,7 +151,7 @@ void Sort(vector<int>& arr, int l, int r) {
     if (l >= r) {
         return;
     }
-    int x = arr[Random(l, r)];             // 随机取一个元素 x
+    int x = arr[RandomInt(l, r)];          // 随机取一个元素 x
     auto bound = Partition(arr, l, r, x);  // 获取左右边界
     // 中间相等区不用排序
     Sort(arr, l, bound.first - 1);   // 排序左侧 < x 区域

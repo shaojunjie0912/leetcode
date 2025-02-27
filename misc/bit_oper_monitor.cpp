@@ -1,5 +1,7 @@
 // 位运算模拟四则算术运算
 // NOTE: 只能按照补码的方式去理解
+// 前人设计了补码, 使得哪怕是负数也能按照正常的加减乘除法规则去计算
+// 只要保证不溢出, 计算机就能正确计算
 
 #include <iostream>
 #include <type_traits>
@@ -21,9 +23,10 @@ T UnsignedRightShift(T value, int shift) {
 int Add(int a, int b) {
     // NOTE: 巧妙: ans 存 a, 如果 b==0 直接返回 a
     int ans = a;
-    while (b != 0) {         // 如果进位消失则退出
-        ans = a ^ b;         // 异或: 无进位相加
-        b = ((a & b) << 1);  // HACK: 按位与+左移得到真正进位结果
+    while (b != 0) {  // 如果进位消失则退出
+        ans = a ^ b;  // 异或: 无进位相加
+        // C++ 负数左移是未定义的
+        b = (a & b) << 1;  // HACK: 按位与+左移得到真正进位结果
         a = ans;
     }
     return ans;
@@ -55,8 +58,8 @@ int Multiply(int a, int b) {
             ans = Add(ans, a);
         }
         a <<= 1;  // a 左移
-        // b >>= 1;  // HACK: b 无符号右移
-        b = UnsignedRightShift(b, 1);
+        // b >>= 1;  // NOTE: 有符号就完蛋了
+        b = UnsignedRightShift(b, 1);  // HACK: b 无符号右移, 防止负数右移补 1
     }
     return ans;
 }

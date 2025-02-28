@@ -22,8 +22,10 @@ public:
         if (!head) {
             return nullptr;
         }
-        ListNode* prev = nullptr;
-        ListNode* next = nullptr;
+        ListNode* prev{nullptr};
+        ListNode* next{nullptr};
+        // NOTE: 循环条件(想一想, 最后返回prev, 那条件就是head非空)
+        // 因为head会到链表末尾
         while (head) {
             next = head->next;
             head->next = prev;

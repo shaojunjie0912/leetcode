@@ -19,14 +19,64 @@ using namespace std;
  */
 class Solution {
 public:
-#if 0
+#if 1
     bool isPalindrome(ListNode* head) {
-        if (!head) {
+        // 快慢指针, 快指针: 2 步; 慢指针: 1 步
+        // NOTE: slow 即中点
+
+        // HACK: 一个节点也是
+        if (!head->next) {
             return true;
         }
+
+        // 1. 找到中点
+        auto slow{head};
+        auto fast{head};
+        while (fast->next && fast->next->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+        }
+
+        // 反转右侧一半链表, 使其指向中点
+        auto curr{slow};
+        ListNode* prev{nullptr};  // 中间节点指向 nullptr
+        ListNode* next{nullptr};
+
+        while (curr) {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        // 2. 比较左右两侧
+        auto left{head};
+        auto right{prev};
+        auto ans{true};
+        while (left && right) {
+            if (left->val != right->val) {
+                ans = false;
+                break;
+            }
+            left = left->next;
+            right = right->next;
+        }
+
+        // 3. 恢复原链表节点结构(从原尾即新右侧头开始)
+        curr = prev;  // NOTE: prev 即最后一个节点
+        prev = nullptr;
+        next = nullptr;
+        while (curr) {
+            next = curr->next;
+            curr->next = prev;
+            prev = curr;
+            curr = next;
+        }
+
+        return ans;
     }
 #else
-    // 栈(偷懒, 占用内存大)
+    // 栈(偷懒, 内存占用高)
     bool isPalindrome(ListNode* head) {
         if (!head) {
             return true;

@@ -19,9 +19,71 @@ using namespace std;
 // NOTE: 只有先序、后序和层序遍历才有唯一序列化反序列化
 // 中序存在相同树不同序列化结果的情况
 
-// NOTE: 本题使用 istringstream & ostringstream 优化
 class Codec {
 public:
+#if 1
+    // NOTE: 处理逻辑有点变化, 根据序列化的要求
+    // 不是每次处理一层，而是每次处理一个节点
+    //   1
+    // 2  3
+    //
+    // 1,2,3,#,#,#,#,
+    string serialize(TreeNode* root) {
+        if (!root) {
+            return "";
+        }
+        ostringstream oss;
+        std::queue<TreeNode*> nodes;
+        nodes.push(root);
+        oss << root->val << ",";  // HACK:
+        while (!nodes.empty()) {
+            int size = nodes.size();
+            while (size--) {
+                auto node{nodes.front()};
+                nodes.pop();
+                // oss << node->val << ","; // NOTE: 这里没了
+                if (node->left) {
+                    nodes.push(node->left);
+                    oss << node->left->val << ",";  // NOTE: 记得将左节点加入字符流
+                } else {
+                    oss << "#,";
+                }
+                if (node->right) {
+                    nodes.push(node->right);
+                    oss << node->right->val << ",";  // NOTE: 记得将右节点加入字符流
+                } else {
+                    oss << "#,";
+                }
+            }
+        }
+        return oss.str();
+    }
+
+    TreeNode* deserialize(string data) {
+        // NOTE: 使用队列
+        if (data.empty()) {
+            return nullptr;
+        }
+        istringstream iss{data};
+        string str_val;
+        getline(iss, str_val, ',');
+        // 获取根节点
+        auto root{Generate(str_val)};
+
+        auto curr{root};
+        while (getline(iss, str_val, ',')) {
+            if (str_val == "#") {
+            }
+        }
+        return root;
+    }
+
+    TreeNode* Generate(string& str_val) {
+        return str_val == "#" ? nullptr : new TreeNode{stoi(str_val)};
+    }
+
+#else
+    // NOTE: 使用 istringstream & ostringstream 优化
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {
         ostringstream oss;
@@ -49,8 +111,7 @@ public:
     // 先序遍历反序列化辅助函数
     TreeNode* PreOrderDese(istringstream& iss) {
         string val;
-        // NOTE: istringstream 本质上是一个流
-        // 而流的内部维护了当前读取的位置
+        // NOTE: istringstream 是一个流, 内部维护了当前读取的位置
         getline(iss, val, ',');  // HACK: 根据 ',' 获取其中字符串
         if (val == "#") {
             return nullptr;  // "#" 代表空
@@ -60,6 +121,7 @@ public:
         root->right = PreOrderDese(iss);          // 左
         return root;
     }
+#endif
 };
 
 // Your Codec object will be instantiated and called as such:

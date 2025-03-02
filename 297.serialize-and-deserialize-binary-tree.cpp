@@ -22,6 +22,8 @@ using namespace std;
 class Codec {
 public:
 #if 1
+    // ============== 层序 ==============
+    // HACK: 错觉? 层序比前序递归快且节省空间
     // NOTE: 处理逻辑有点变化, 根据序列化的要求
     // 不是每次处理一层，而是每次处理一个节点
     //   1
@@ -59,8 +61,12 @@ public:
         return oss.str();
     }
 
+    //   1
+    // 2  3
+    //
+    // 1,2,3,#,#,#,#,
     TreeNode* deserialize(string data) {
-        // NOTE: 使用队列
+        // NOTE: 使用队列存放节点
         if (data.empty()) {
             return nullptr;
         }
@@ -69,10 +75,25 @@ public:
         getline(iss, str_val, ',');
         // 获取根节点
         auto root{Generate(str_val)};
-
-        auto curr{root};
-        while (getline(iss, str_val, ',')) {
-            if (str_val == "#") {
+        queue<TreeNode*> nodes;  // HACK: !! 队列 !!
+        nodes.push(root);
+        while (!nodes.empty()) {
+            int size = nodes.size();
+            while (size--) {
+                auto node{nodes.front()};
+                nodes.pop();
+                // 解析左子节点
+                getline(iss, str_val, ',');
+                node->left = Generate(str_val);  // NOTE: 造左子节点
+                if (node->left) {
+                    nodes.push(node->left);  // NOTE: 非空子节点才入队
+                }
+                // 解析右子节点
+                getline(iss, str_val, ',');
+                node->right = Generate(str_val);  // NOTE: 造右子节点
+                if (node->right) {
+                    nodes.push(node->right);  // NOTE: 非空子节点才入队
+                }
             }
         }
         return root;
@@ -83,6 +104,7 @@ public:
     }
 
 #else
+    // ============== 先序 ==============
     // NOTE: 使用 istringstream & ostringstream 优化
     // Encodes a tree to a single string.
     string serialize(TreeNode* root) {

@@ -20,6 +20,7 @@ using namespace std;
  */
 class Solution {
 public:
+    // HACK: 本题lc上有更简洁写法
     // NOTE: 本题是统计<完全>二叉树节点数
     // <满>二叉树节点数: 2^h -1, 其中 h 是高度
     // HACK: 递归

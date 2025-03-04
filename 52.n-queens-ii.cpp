@@ -14,8 +14,10 @@ using namespace std;
 class Solution {
 public:
     int totalNQueens(int n) {
-#if 0
+#if 1
         // 解法二: 位运算(好!)
+        // limit = (1<<n) - 1
+        return R2((1 << n) - 1, 0, 0, 0);
 #else
         // 解法一: 数组(速度慢)
         vector<int> path(n);
@@ -39,9 +41,24 @@ public:
         // 可以摆放的候选位置(取反: 1 可放, 0 不可放 )
         // NOTE: 用 limit 限制规模
         int candidate = limit & (~ban);
-        // HACK: 放置皇后的尝试!!(理解为列的选择)
+        // HACK: 放置皇后的尝试!!(理解为循环中列的选择)
         int place = 0;
         int ans = 0;
+        while (candidate) {  // 0 说明没有可选位置(NOTE: 又多加!)
+            // old candidate: 0 0 1 1 1 0
+            //   ^
+            // place:         0 0 0 0 1 0
+            //  ＝
+            // new candidate: 0 0 1 1 0 0
+            place = candidate & (-candidate);  // 提取最右边的 1 (K 算法)
+            candidate ^= place;                // 将皇后摆放在最右边的 1(无进位相加)
+            // 执行剩下的递归
+            // 列限制: 直接 col | place(当前行摆放皇后位置)
+            // ↙ 对角线限制: (left | place) >> 1 (NOTE: 31...2 1 0)
+            // ↘ 对角线限制: (right | place) << 1
+            ans += R2(limit, col | place, (left | place) >> 1, (right | place) << 1);
+        }
+        return ans;
     }
 
     // ==================================================

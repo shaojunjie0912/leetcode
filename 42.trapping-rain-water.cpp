@@ -39,8 +39,27 @@ public:
         return ans;
     }
 #else
-    // 解法二: 双指针
-    int trap(vector<int>& nums) {}
+    // 解法二: 双指针(存在单调性分析)
+    // lmax: 左侧部分最大值
+    // rmax: 右侧部分最大值
+    int trap(vector<int>& nums) {
+        int l = 1;
+        int r = nums.size() - 2;
+        int lmax = nums[0];
+        int rmax = nums.back();
+        int ans = 0;
+        while (l <= r) {
+            if (lmax <= rmax) {  // 左侧最大值 <= 右侧最大值, 则 l 位置可求
+                ans += max(0, lmax - nums[l]);
+                lmax = max(lmax, nums[l++]);  // 更新 lmax
+
+            } else {  // 左侧最大值 > 右侧最大值, 则 r 位置可求
+                ans += max(0, rmax - nums[r]);
+                rmax = max(rmax, nums[r--]);  // 更新 rmax
+            }
+        }
+        return ans;
+    }
 #endif
 };
 // @leet end

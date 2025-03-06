@@ -8,37 +8,18 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-#if 1
     // 双指针法
     int removeElement(vector<int>& nums, int val) {
-        int slow = 0;
-        int fast = 0;
-        while (fast < nums.size()) {
-            if (nums[fast] != val) {
-                nums[slow++] = nums[fast];
+        int size{0};
+        for (int slow = 0, fast = 0; fast < nums.size(); ++fast) {
+            if (nums[fast] == val) {
+                continue;
             }
-            ++fast;
-        }
-        return slow;
-    }
-#else
-    // 暴力双循环
-    // 1for: 查找特定元素
-    // 2for: 移动数组
-    int removeElement(vector<int>& nums, int val) {
-        int size = nums.size();  // 有效元素大小
-        for (int i = 0; i < size; ++i) {
-            if (nums[i] == val) {
-                for (int j = i + 1; j < nums.size(); ++j) {
-                    nums[j - 1] = nums[j];
-                }
-                --i;  // 数组左移，因此 i 左移
-                --size;
-            }
+            nums[slow++] = nums[fast];  // 别++fast了, 想清楚!
+            ++size;
         }
         return size;
     }
-#endif
 };
 // @leet end
 

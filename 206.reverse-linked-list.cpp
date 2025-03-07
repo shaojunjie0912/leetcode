@@ -19,20 +19,16 @@ using namespace std;
 class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
-        if (!head) {
-            return nullptr;
-        }
         ListNode* prev{nullptr};
         ListNode* next{nullptr};
-        // NOTE: 循环条件(想一想, 最后返回prev, 那条件就是head非空)
-        // 因为head会到链表末尾
+        // NOTE: head会到链表末尾nullptr, 条件head非空
         while (head) {
             next = head->next;
             head->next = prev;
             prev = head;
-            head = next;
+            head = next;  // HACK: 竟然忘了这个?最后肯定要移动更新curr到next啊!
         }
-        return prev;
+        return prev;  // NOTE: 返回prev
     }
 };
 // @leet end

@@ -17,7 +17,12 @@ using namespace std;
  */
 class Solution {
 public:
-    void deleteNode(ListNode* node) {}
+    // NOTE: 无法访问 prev, 因此将 next 的值复制到 curr
+    // 啊? 这就是题目中的"值删除"?
+    void deleteNode(ListNode* node) {
+        node->val = node->next->val;
+        node->next = node->next->next;
+    }
 };
 // @leet end
 

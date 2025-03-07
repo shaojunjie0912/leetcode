@@ -9,36 +9,19 @@ using namespace std;
 class Solution {
 public:
     int search(vector<int> &nums, int target) {
-#if 0
-        // 左闭右开区间 [ , size)
-        int left = 0;
-        int right = nums.size();  // HACK: ! size() !
-        while (left < right) {
-            int mid = left + (right - left) / 2;
+        int l = 0;
+        int r = nums.size() - 1;
+        while (l <= r) {
+            int mid = l + (r - l) / 2;  // NOTE: 这在里面!!!傻了
             if (nums[mid] < target) {
-                left = mid + 1;
+                l = mid + 1;
             } else if (nums[mid] > target) {
-                right = mid;
+                r = mid - 1;
             } else {
                 return mid;
             }
         }
-#else
-        // 左闭右闭区间 [ , size - 1]
-        int l = 0;
-        int r = nums.size() - 1;
-        while (l <= r) {
-            int m = l + (r - l) / 2;
-            if (nums[m] < target) {
-                l = m + 1;
-            } else if (nums[m] > target) {
-                r = m - 1;
-            } else {
-                return m;
-            }
-        }
         return -1;
-#endif
     }
 };
 // @leet end

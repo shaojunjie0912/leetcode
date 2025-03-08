@@ -8,41 +8,28 @@ using namespace std;
 // @leet start
 class Solution {
 public:
+    // 二分不断缩小范围, 在多个峰值中找到一个
+
+    // 定理:
+    // 1. 如果 i<n−1 且 nums[i]<nums[i+1], 则在下标 [i+1,n−1] 中一定存在至少一个峰值。
+    // 2. 如果 i<n−1 且 nums[i]>nums[i+1], 那么在 [0,i] 中一定存在至少一个峰值。
+
+    // 红色: 峰值元素左边
+    // 蓝色: 峰值元素以及峰值元素右边
+
     int findPeakElement(vector<int>& nums) {
-        int ans = -1;
-        // 数组长度为 1 直接返回索引 0
-        if (nums.size() < 2) {
-            return 0;
-        }
-        // 验证第一个元素是否为峰值
-        if (nums[0] > nums[1]) {
-            return 0;
-        }
-        // 验证最后一个元素是否为峰值
-        if (nums[nums.size() - 1] > nums[nums.size() - 2]) {
-            return nums.size() - 1;
-        }
-        // 中间 (1, n-2) 一定有峰值点
-        int l = 1;
-        int r = nums.size() - 2;
-        // 二分法[]双闭区间
+        int l = 0;
+        // NOTE: 根据蓝色的定义, 最右边那个元素一定是蓝色, 所以未知区间不包括它
+        int r = nums.size() - 2;  // size - 1 会栈溢出(因为下面 mid + 1, 数组访问越界)
         while (l <= r) {
-            int m = l + (r - l) / 2;
-            // 如果中点是峰值, 则退出循环, 直接返回
-            if (nums[m] > nums[m - 1] && nums[m] > nums[m + 1]) {
-                ans = m;
-                break;
-            } else if (nums[m] < nums[m - 1]) {
-                // nums[m-1] -> nums[m] 下降趋势
-                // 左边有峰值点
-                r = m - 1;
-            } else if (nums[m] < nums[m + 1]) {
-                // nums[m-1] -> nums[m] 下降趋势
-                // 右边有峰值点
-                l = m + 1;
+            int mid = l + (r - l) / 2;
+            if (nums[mid] > nums[mid + 1]) {  // 左边一定有峰值
+                r = mid - 1;
+            } else {  // 右边一定有峰值
+                l = mid + 1;
             }
         }
-        return ans;
+        return l;
     }
 };
 // @leet end

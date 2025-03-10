@@ -9,7 +9,13 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-    int lengthOfLongestSubstring(string s) {}
+    int lengthOfLongestSubstring(string s) {
+        int curr_map[128]{};
+        int max_len{0};
+        for (int i = 0; i < s.size(); ++i) {
+        }
+        return 0;
+    }
 };
 // @leet end
 

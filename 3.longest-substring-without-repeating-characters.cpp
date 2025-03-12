@@ -6,15 +6,30 @@
 
 using namespace std;
 
+// 思考: 右端点如果是重复值, 则破坏了条件
+// 则需要左端点右移来使得区间重新符合条件
+// 哪怕右端点只是跟中间某个字符重复
+// 也应该缩小左端点, 首先, 已经记录了之前的长度,
+// 其次, 题目就是要求连续, 跟中间重复肯定不连续
+
 // @leet start
 class Solution {
 public:
     int lengthOfLongestSubstring(string s) {
         int curr_map[128]{};
-        int max_len{0};
-        for (int i = 0; i < s.size(); ++i) {
+        int ans{0};
+        for (int l{0}, r{0}; r < s.size(); ++r) {
+            ++curr_map[s[r]];
+            while (curr_map[s[r]] > 1) {  // 如果右侧是重复字符, 则左端点一直右移
+                // 思考: <左>端点右移是因为<右>端点之前出现过
+                // 记得 --左端点字符计数
+                --curr_map[s[l]];
+                ++l;
+            }
+            ans = max(ans,
+                      r - l + 1);  // 卡在没想到长度如何计算, 该放在循环后还是前
         }
-        return 0;
+        return ans;
     }
 };
 // @leet end

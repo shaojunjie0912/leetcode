@@ -6,61 +6,40 @@
 
 using namespace std;
 
+// NOTE: 遍历每一个方块, 想象成带左右两侧板的桶
+// 桶的左侧板就是左侧最大高度, 右侧板就是右侧最大高度
+// 取左右侧板较小值
+// 1. 如果最小值 <= 当前方块本身高度, 则当前方块上没有雨水
+// 2. 否则: 再减去方块本身的高度, 即当前方块雨水
+
 // @leet start
 class Solution {
 public:
-#if 0
-    // HACK: 解法一: lmax rmax 最大值辅助数组
-    // 总雨水 = 所有柱子雨水之和
-    // 任何位置 i 处柱子顶部雨水:
-    // 跟 0 取最大是 i 柱可能最高, 求出来结果是负数, 肯定没有雨水
-    // max{ min{0 ~ i-1最大高度, i+1 ~ n-1最大高度} - i 高度, 0}
     int trap(vector<int>& nums) {
         int n = nums.size();
+        int ans{0};
 
-        vector<int> lmax(n);           // 记录左侧 0 ~ i 最大值(提前遍历获取)
-        lmax[0] = nums[0];             // 0 ~ 0 上最大值
-        for (int i = 1; i < n; ++i) {  // 0 ~ i (1,2,3...) 最大值
-            lmax[i] = max(lmax[i - 1], nums[i]);
+        // 前缀最大值数组(保存 0 ~ i 中最大值)
+        vector<int> pre_max(n);
+        pre_max[0] = nums[0];
+        for (int i{1}; i < n; ++i) {
+            pre_max[i] = max(nums[i], pre_max[i - 1]);  // NOTE: 比较当前 nums[i] 和 pre_max[i-1]
         }
 
-        vector<int> rmax(n);  // 记录右侧 i ~ n-1 最大值(提前遍历获取)
-        rmax[n - 1] = nums[n - 1];
-        for (int i = n - 2; i >= 0; --i) {
-            rmax[i] = max(rmax[i + 1], nums[i]);
+        // 后缀最大值数组(保存 i ~ n-1 中最大值)
+        vector<int> suf_max(n);
+        suf_max[n - 1] = nums[n - 1];
+        for (int j{n - 2}; j >= 0; --j) {
+            suf_max[j] = max(nums[j], suf_max[j + 1]);  // NOTE: 比较当前 nums[i] 和 suf_max[j+1]
         }
-        int ans = 0;
-        // NOTE: i: 1 ~ n-2, 是因为 0 & n-1 柱子不可能有水
-        // i 左侧: i - 1
-        // i 右侧: i + 1
-        for (int i = 1; i < n - 1; ++i) {
-            ans += max(0, min(lmax[i - 1], rmax[i + 1]) - nums[i]);
+
+        // 遍历每一个方块
+        for (int k{0}; k < n; ++k) {
+            ans += min(pre_max[k], suf_max[k]) - nums[k];
         }
+
         return ans;
     }
-#else
-    // 解法二: 双指针(存在单调性分析)
-    // lmax: 左侧部分最大值
-    // rmax: 右侧部分最大值
-    int trap(vector<int>& nums) {
-        int l = 1;
-        int r = nums.size() - 2;
-        int lmax = nums[0];
-        int rmax = nums.back();
-        int ans = 0;
-        while (l <= r) {
-            if (lmax <= rmax) {  // 左侧最大值 <= 右侧最大值, 则 l 位置可求
-                ans += max(0, lmax - nums[l]);
-                lmax = max(lmax, nums[l++]);  // 更新 lmax
-
-            } else {  // 左侧最大值 > 右侧最大值, 则 r 位置可求
-                ans += max(0, rmax - nums[r]);
-                rmax = max(rmax, nums[r--]);  // 更新 rmax
-            }
-        }
-        return ans;
-    }
-#endif
 };
 // @leet end
 

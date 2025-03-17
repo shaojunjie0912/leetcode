@@ -39,7 +39,6 @@ private:
         // 1. 当前节点满足条件
         // 2. 左子树满足条件(更新右边界为 x)
         // 3. 右子树满足条件(更新左边界为 x)
-        // 中 -> 左 -> 右
         return left < x && x < right && R(root->left, left, x) && R(root->right, x, right);
     }
 #elif 1

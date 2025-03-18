@@ -24,11 +24,11 @@ public:
     bool isValidBST(TreeNode* root) {
         // HACK: 用int64_t, 防止INT_MIN, INT_MAX
         // return PreR(root, INT64_MIN, INT64_MAX);
-        return InR(root);
+        // return InR(root);
+        return PostR(root).first != INT64_MIN;
     }
 
 private:
-#if 0
     // 前序遍历递归, 传入节点同时, 传入开区间范围(left, right)
     // HACK: 关键: left < val < right
     bool PreR(TreeNode* root, int64_t left, int64_t right) {
@@ -39,9 +39,9 @@ private:
         // 1. 当前节点满足条件
         // 2. 左子树满足条件(更新右边界为 x)
         // 3. 右子树满足条件(更新左边界为 x)
-        return left < x && x < right && R(root->left, left, x) && R(root->right, x, right);
+        return left < x && x < right && PreR(root->left, left, x) && PreR(root->right, x, right);
     }
-#elif 1
+
     // 中序遍历递归
     // 思考: 中序遍历的结果就是一个递增数组
     // HACK: 关键: prev_val < curr_val
@@ -62,10 +62,27 @@ private:
         // 右
         return InR(root->right);
     }
-#else
+
     // 后序遍历递归
-    bool PostR() {}
-#endif
+    // 从下往上传范围, 需要先遍历左右子树(获得左右子树最大值最小值), 再跟当前节点比较
+    pair<int64_t, int64_t> PostR(TreeNode* root) {
+        if (!root) {
+            return {INT64_MAX, INT64_MIN};  // NOTE: 去除空节点影响
+        }
+        // 先获取左子树最大最小值
+        auto [l_min, l_max] = PostR(root->left);
+        // 再获取右子树最大最小值
+        auto [r_min, r_max] = PostR(root->right);
+        if (l_max >= root->val || root->val >= r_min) {  // HACK: 条件
+            // 不满足条件直接返回一个肯定打破条件的范围
+            return {INT64_MIN, INT64_MAX};
+        }
+        // 满足条件就再把范围网上传
+        // HACK: 最小值和最大值都要!
+        // HACK: 需要跟当前节点值比较, 因为如果左子树是空树
+        // 那么最小值应该是当前节点值, 否则就变成 INT64_MAX 了
+        return {min((int64_t)root->val, l_min), max((int64_t)root->val, r_max)};
+    }
 };
 // @leet end
 

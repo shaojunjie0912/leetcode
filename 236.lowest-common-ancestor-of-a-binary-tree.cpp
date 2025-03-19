@@ -5,6 +5,16 @@
 
 using namespace std;
 
+// NOTE: 递归, 分情况:
+// 当前节点是空节点 -
+// 当前节点是 p     -> 返回当前节点
+// 当前节点是 q     -
+// 其他:
+//      p,q 分别在两棵子树中: 返回当前节点
+//      p&q 都在左子树: 返回递归左子树的结果
+//      p&q 都在右子树: 返回递归右子树的结果
+//      p&q 不在任何子树: 返回空节点
+
 // @leet start
 /**
  * Definition for a binary tree node.
@@ -17,30 +27,26 @@ using namespace std;
  */
 class Solution {
 public:
-    // NOTE: 递归, 两种情况:
-    // 1. p&q 包含在一棵树内
-    // 2. p,q 分叉在两棵树中
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // 如果为null/p/q, 返回对应null/p/q
+        // 如果当前节点为 null/p/q, 返回对应 null/p/q
         if (!root || root == p || root == q) {
             return root;
         }
         auto l{lowestCommonAncestor(root->left, p, q)};   // 左递归
         auto r{lowestCommonAncestor(root->right, p, q)};  // 右递归
 
-        // NOTE: p&q 包含在一棵树内会遇到的情况
-        if (!l && !r) {
-            return nullptr;  // HACK: l,r都没搜到返回空
-        }
-
-        //  NOTE: p,q 分叉在两棵树中会遇到的情况
+        // NOTE: p,q 分别在两棵子树中: 返回当前节点
         if (l && r) {
-            return root;  // HACK: l,r都搜到返回p,q的父节点
+            return root;
         }
-
-        // HACK: l/r 一个空一个不空
-        // 返回 l/r 中不为空的那个
-        return !l ? r : l;
+        // 只有左边有: 返回左边递归结果
+        if (l) {
+            return l;
+        }
+        // 只有右边有: 返回右边递归结果
+        else {
+            return r;
+        }
     }
 };
 // @leet end

@@ -25,13 +25,14 @@ public:
         vector<string> ans;
         string path(n, 0);
 
+        // 递归 lambda 写法
         auto dfs = [&](auto&& self, int i) {
             if (i == n) {
                 ans.push_back(path);
                 return;
             }
-            for (char c : mapping[digits[i] - '0']) {
-                path[i] = c;  // 直接覆盖
+            for (char c : mapping[digits[i] - '0']) {  // 对应数组下标
+                path[i] = c;                           // 直接覆盖(NOTE: 感觉对应回溯?)
                 self(self, i + 1);
             }
         };

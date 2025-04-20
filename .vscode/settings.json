@@ -14,7 +14,7 @@
     "-Wformat=2",
     "-Wcast-align",
     "-Wconversion",
-    "-Wsign-conversion",
+    // "-Wsign-conversion",
     "-Wnull-dereference"
   ],
   "C_Cpp_Runner.msvcWarnings": [

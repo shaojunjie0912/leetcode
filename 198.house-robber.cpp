@@ -6,7 +6,6 @@
 
 using namespace std;
 
-// 递推
 // f[i] = max(f[i-1], f[i-2] + nums[i])
 // f[i+2] = max(f[i+1], f[i] + nums[i])
 

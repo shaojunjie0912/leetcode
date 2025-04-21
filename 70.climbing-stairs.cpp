@@ -6,26 +6,47 @@
 
 using namespace std;
 
-// 本题动态规划思考方式: 枚举选哪个
-// 本题: 从 0 爬到 n 有多少种方法
+// 本题动态规划思考方式:
+// -『不选/选』
+// -『枚举选哪个』-> 本题!
 
 // dfs(i): 从 0 爬到 i 有多少种方法
 // 分类:
 // - 最后一步爬 1 个台阶: 子问题 -> 从 0 ~ i-1 有多少种方法
 // - 最后一步爬 2 个台阶: 子问题 -> 从 0 ~ i-2 有多少种方法
-// dfs(i) = dfs(i - 1) + dfs(i - 2)
+// 加法原理: dfs(i) = dfs(i - 1) + dfs(i - 2)
 // 递归边界: dfs(0) = 1, dfs(1) = 1
-// 递归入口: dfs(n)
 
 // @leet start
 class Solution {
+    enum Method {
+        DFS,       // 普通递归 (超时)
+        DFS_MEMO,  // 递归 + 记忆化搜索
+        DP_F,      // 递推 (普通 f 数组)
+        DP_NEW_F,  // 递推 (只用三个状态)
+    };
+
 public:
-#if 1
-    // 递推
-    //
     int climbStairs(int n) {
-#if 1
-        // 辗转相除写法 (空间复杂度 O(1))
+        Method method{DP_NEW_F};
+        switch (method) {
+            case DFS: {
+                return SolveDfs(n);
+            }
+            case DFS_MEMO: {
+                return SolveDfsMemo(n);
+            }
+            case DP_F: {
+                return SolveDpF(n);
+            }
+            case DP_NEW_F: {
+                return SolveDpNewF(n);
+            }
+        }
+    }
+
+    int SolveDpNewF(int n) {
+        // 三个状态写法 (空间复杂度 O(1))
         // f0: 上上个
         // f1: 上个
         int f0 = 1, f1 = 1;
@@ -36,7 +57,9 @@ public:
             f1 = new_f;
         }
         return f1;
-#else
+    }
+
+    int SolveDpF(int n) {
         // 常规 f 数组写法 (空间复杂度 O(n))
         // f(i) = f(i-1) + f(i-2)
         vector<int> f(n + 1);
@@ -45,27 +68,27 @@ public:
             f[i] = f[i - 1] + f[i - 2];
         }
         return f[n];
-#endif
     }
-#elif 0
+
     // 递归 + 记忆化搜索
-    int climbStairs(int n) {
+    int SolveDfsMemo(int n) {
         vector<int> memo(n + 1, -1);  // HACK: 记忆数组: 0 ~ n 一共 n + 1 个
         auto dfs = [&](auto&& self, int i) {
             if (i == 0 || i == 1) {  // NOTE: 递归边界!! 0 ~ 0 的方法也是 1 种
                 return 1;
             }
-            if (memo[i] != -1) {  // 如果存在 dfs(i) 的记忆, 则直接返回结果
-                return memo[i];
+            auto& res{memo[i]};
+            if (res != -1) {  // 如果存在 dfs(i) 的记忆, 则直接返回结果
+                return res;
             }
-            memo[i] = self(self, i - 1) + self(self, i - 2);  // 不存在记忆则保存
-            return memo[i];
+            res = self(self, i - 1) + self(self, i - 2);  // 不存在记忆则保存
+            return res;
         };
         return dfs(dfs, n);
     }
-#else
+
     // 递归 (超时)
-    int climbStairs(int n) {
+    int SolveDfs(int n) {
         auto dfs = [&](auto&& self, int i) {
             if (i == 0 || i == 1) {  // NOTE: 递归边界!! 0 ~ 0 的方法也是 1 种
                 return 1;
@@ -74,7 +97,6 @@ public:
         };
         return dfs(dfs, n);
     }
-#endif
 };
 // @leet end
 

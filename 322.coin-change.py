@@ -62,7 +62,13 @@ class Solution:
 
     # f[c] = min(f[c], f[c - w[i]] + 1)
     def SolveDp1dF(self, coins: List[int], amount: int) -> int:
-        return 0
+        f = [0] + [inf] * amount  # NOTE: 这里长度是 amount + 1 不是 n + 1
+        # 同样的双重循环, 但是正序计算, 且只取 c >= x 部分
+        for x in coins:
+            for c in range(x, amount + 1):
+                f[c] = min(f[c], f[c - x] + 1)
+        ans = f[amount]  # NOTE: 这里是 f[amount] 不是 f[n]
+        return ans if ans < inf else -1
 
 
 # @leet end

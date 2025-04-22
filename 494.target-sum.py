@@ -56,7 +56,7 @@ class Solution:
         # 递归改循环
         for i, x in enumerate(nums):  # 参数 1: i
             for c in range(capacity + 1):  # 参数 2: c
-                if x > c:  # nums[i] > c 只能不选
+                if x > c:  # nums[i] > c一定不选
                     f[i + 1][c] = f[i][c]
                 else:  # 不选/选
                     f[i + 1][c] = f[i][c] + f[i][c - x]

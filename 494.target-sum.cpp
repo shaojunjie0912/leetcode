@@ -27,12 +27,12 @@ class Solution {
         DFS_MEMO,    // 递归 + 记忆化搜索
         DP_2D_F,     // 递推 (普通二维 f 数组)
         DP_2D_NewF,  // 递推 (普通二维 f 数组的两行)
-        DP_1D,       // 递推 (一维数组)
+        DP_1D_F,     // 递推 (一维数组)
     };
 
 public:
     int findTargetSumWays(vector<int>& nums, int target) {
-        Method method{DP_1D};
+        Method method{DP_1D_F};
 
         // 计算背包容量
         int s = reduce(nums.begin(), nums.end()) - abs(target);
@@ -48,7 +48,7 @@ public:
                 return SolveDp2dF(nums, capacity);
             case DP_2D_NewF:
                 return SolveDp2dNewF(nums, capacity);
-            case DP_1D:
+            case DP_1D_F:
                 return SolveDp1d(nums, capacity);
             default:
                 throw std::invalid_argument("Unsupported method");
@@ -56,15 +56,16 @@ public:
     }
 
     // 递推 (一维数组)
-    // 去除第一维度, 只用一维数组 (从后往前计算)
-    // f[c] = f[c] + f[c - nums[i]]
+    // 去除第一维度, 只用一维数组
+    // f[c] = f[c] + f[c - nums[i]]  NOTE: 从后往前倒序计算 f[c] 才是对的
     int SolveDp1d(vector<int>& nums, int capacity) {
         // NOTE: 计算背包容量在外部
         vector<int> f(capacity + 1);  // 只用一个数组存储 0 ~ capacity
         f[0] = 1;                     // 初始值
         // NOTE: 当只有一个维度时, 当 x > c, 则不能选的情况会变成: f[c] = f[c]
         // 这是多余的, 因此, 只要计算 x <= c 的情况即可
-        for (auto& x : nums) {                     // 同样的双重循环
+        for (auto& x : nums) {  // 同样的双重循环
+            // 但是从后往前计算 f[c]
             for (int c = capacity; c >= x; --c) {  // 但是只计算 c >= x 的情况
                 f[c] += f[c - x];
             }

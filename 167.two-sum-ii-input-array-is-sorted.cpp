@@ -6,10 +6,11 @@
 
 using namespace std;
 
+// 双指针
+
 // @leet start
 class Solution {
 public:
-    // 第一感觉: 双指针
     vector<int> twoSum(vector<int>& numbers, int target) {
         int left = 0;
         int right = numbers.size() - 1;
@@ -22,11 +23,9 @@ public:
                 break;
             }
         }
-        return {left + 1, right + 1};
+        return {left + 1, right + 1};  // ? 下标从 1 开始
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

@@ -6,23 +6,25 @@
 
 using namespace std;
 
+// 双指针
+// 中间的垂线与高度小的垂线组合一定水量更小
+// 因此不能包含高度小的垂线, 谁小就移动谁
+
 // @leet start
 class Solution {
 public:
-    // NOTE: 双指针, 直接记
     // left right 谁小, 以谁为边界开始结算, 然后小的往中间移动
     int maxArea(vector<int>& height) {
-        int left = 0;
-        int right = height.size() - 1;
-        int ans = 0;
-        int h = 0;
+        int left = 0, right = height.size() - 1;
+        int ans{0};
         while (left < right) {
-            h = min(height[left], height[right]);
-            ans = max(ans, h * (right - left));
-            if (height[left] < height[right]) {
-                ++left;
-            } else {
+            int area = (right - left) * std::min(height[right], height[left]);
+            ans = max(ans, area);
+            // 小的往中间移动
+            if (height[left] > height[right]) {
                 --right;
+            } else {
+                ++left;
             }
         }
         return ans;
@@ -30,6 +32,4 @@ public:
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

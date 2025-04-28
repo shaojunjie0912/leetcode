@@ -5,6 +5,9 @@
 
 using namespace std;
 
+// dummy + 进位 carry
+// 本题链表节点代表数位从低到高, 遍历过程自然可以进位
+
 // @leet start
 /**
  * Definition for singly-linked list.
@@ -19,38 +22,28 @@ using namespace std;
 class Solution {
 public:
     ListNode* addTwoNumbers(ListNode* l1, ListNode* l2) {
-        // 辅助变量
-        // ans: 结果链表头结点
-        ListNode* ans = nullptr;
-        // cur: 当前结点
-        ListNode* cur = nullptr;
-        // carry: 进位(0/1)
-        int carry = 0;
-
-        while (l1 || l2) {
-            int sum = (l1 ? l1->val : 0) + (l2 ? l2->val : 0) + carry;  // 结点和+进位
-            int val = sum % 10;                                         // %10
-            carry = sum / 10;                                           // /10
-            if (!ans) {
-                ans = new ListNode{val};
-                cur = ans;
-            } else {
-                cur->next = new ListNode{val};
-                cur = cur->next;  // 更新结果链表遍历结点
+        ListNode dummy{};
+        auto curr{&dummy};
+        int carry{0};  // 进位
+        while (l1 || l2 || carry) {
+            if (l1) {              // 如果有 l1
+                carry += l1->val;  // 加上 l1 节点值
+                l1 = l1->next;
             }
-            l1 = l1 ? l1->next : nullptr;  // 更新链表一遍历结点
-            l2 = l2 ? l2->next : nullptr;  // 更新链表二遍历结点
+            if (l2) {              // 如果有 l2
+                carry += l2->val;  // 加上 l2 节点值
+                l2 = l2->next;
+            }
+            // 1. 计算数位 (new 新节点)
+            curr->next = new ListNode{carry % 10};
+            curr = curr->next;
+            // 2. 计算新的进位
+            carry /= 10;
         }
-        // 最后一步链表1和2都到末尾nullptr了, 跳出循环
-        // <但如果有进位>则需要手动构造最后一个结点
-        if (carry == 1) {
-            cur->next = new ListNode{1};
-        }
-        return ans;
+
+        return dummy.next;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

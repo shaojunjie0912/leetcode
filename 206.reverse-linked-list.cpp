@@ -5,6 +5,8 @@
 
 using namespace std;
 
+// 创建一个新的空链表,「头插法」依次在头部插入节点
+
 // @leet start
 /**
  * Definition for singly-linked list.
@@ -20,19 +22,16 @@ class Solution {
 public:
     ListNode* reverseList(ListNode* head) {
         ListNode* prev{nullptr};
-        ListNode* next{nullptr};
-        // NOTE: head会到链表末尾nullptr, 条件head非空
-        while (head) {
-            next = head->next;
-            head->next = prev;
-            prev = head;
-            head = next;  // HACK: 竟然忘了这个?最后肯定要移动更新curr到next啊!
+        ListNode* curr{head};
+        while (curr) {
+            auto next{curr->next};  // 暂存 next
+            curr->next = prev;
+            prev = curr;
+            curr = next;
         }
-        return prev;  // NOTE: 返回prev
+        return prev;  // NOTE: 返回的是 prev, 此时 curr = nullptr
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

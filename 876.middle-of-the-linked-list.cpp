@@ -6,6 +6,12 @@
 
 using namespace std;
 
+// 技巧: 快(2)慢(1)指针
+// 奇数: fast 到最后一个节点, slow 到中间节点
+// 偶数: fast 到 nullptr, slow 到第二个中间节点
+// 循环退出条件: fast == nullptr 或 fast->next == nullptr
+// 返回 slow
+
 // @leet start
 /**
  * Definition for singly-linked list.
@@ -19,22 +25,15 @@ using namespace std;
  */
 class Solution {
 public:
-    // NOTE: 技巧: 快(2)慢(1)指针
-    // 奇数: fast 到最后一个节点, slow 到中间
-    // 偶数: fast 到倒数第二个节点, slow 到中间第一个
-    // 统一起来返回 slow: 则循环退出条件: fast==nullptr或 fast->next==nullptr
     ListNode* middleNode(ListNode* head) {
-        auto fast{head};
-        auto slow{head};
+        auto fast{head}, slow{head};
         while (fast && fast->next) {
-            slow = slow->next;
-            fast = fast->next->next;
+            slow = slow->next;        // slow 每次 1 步
+            fast = fast->next->next;  // fast 每次 2 步
         }
         return slow;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

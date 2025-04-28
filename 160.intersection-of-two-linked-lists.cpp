@@ -5,6 +5,13 @@
 
 using namespace std;
 
+// 将空节点加入考虑, 兼容不相交的情况
+// 假设链表 A 额外长度为 x, 链表 B 额外长度为 y, 相交部分长度为 z
+// 有 (x + z) + y = (y + z) + x
+// 当 A 走到 nullptr 时, 跳到 B 的 head 再走 y 步
+// 当 B 走到 nullptr 时, 跳到 A 的 head 再走 x 步
+// 一定相遇!! (如果相遇节点是空节点, 则不相交)
+
 // @leet start
 /**
  * Definition for singly-linked list.
@@ -17,53 +24,15 @@ using namespace std;
 class Solution {
 public:
     ListNode *getIntersectionNode(ListNode *headA, ListNode *headB) {
-        // NOTE: 长链表先走 diff 步, 短链表再走, 一定在相交的起始节点
-        // NOTE: 相交单链表最后一定是相同节点
-        if (!headA || !headB) {
-            return nullptr;
+        auto p{headA};
+        auto q{headB};
+        while (p != q) {
+            p = p ? p->next : headB;  // 当 A 走到 nullptr 时, 跳到 B 的 head 继续走
+            q = q ? q->next : headA;  // 当 B 走到 nullptr 时, 跳到 A 的 head 继续走
         }
-        int diff{0};  // 理解为"步", 节点之间的连线, 不是节点个数(差1个)
-        auto a{headA};
-        auto b{headB};
-
-        while (a->next) {
-            a = a->next;
-            ++diff;  // diff 自增
-        }
-        while (b->next) {
-            b = b->next;
-            --diff;  // diff 自减
-        }
-
-        // 上面如果不判断 -> next 则这里判断都是nullptr了
-        // 此处为链表最后一个节点
-        if (a != b) {  // HACK: 如果最后一个节点不相同, 则必不相交
-            return nullptr;
-        }
-        if (diff > 0) {
-            a = headA;  // A 长
-            b = headB;  // B 短
-        } else {
-            a = headB;  // B 长
-            b = headA;  // A 短
-            // HACK: diff 取绝对值
-            diff = std::abs(diff);
-        }
-        // NOTE: 长链表先走 diff 步
-        while (diff > 0) {
-            a = a->next;
-            --diff;
-        }
-        // NOTE: 长短链表再一起走
-        while (a != b) {
-            a = a->next;
-            b = b->next;
-        }
-        return a;
+        return p;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

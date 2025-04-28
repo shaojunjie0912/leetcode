@@ -5,6 +5,13 @@
 
 using namespace std;
 
+// 三连击:
+// 1. 反转整条链表
+// 2. 反转部分链表
+// 3. 反转多个部分链表
+
+// p0 是区间左端点左边那个节点
+
 // @leet start
 /**
  * Definition for singly-linked list.
@@ -16,94 +23,39 @@ using namespace std;
  *     ListNode(int x, ListNode *next) : val(x), next(next) {}
  * };
  */
-
-// NOTE: 按 k 个一组翻转跟翻转整条链表不同
-// 每组头节点翻转后指向下一组开始节点, 而不是一开始的nullptr
-// HACK: 下组头 -> 下下组头(就是更新 last_team_end)
-// 上组头 -> 下组尾
-
-// Reverse(s1, e1) 前: s1->e1 -> s2->e2 -> s3->e3
-// Reverse(s1, e1) 后: s1<-e1  s2->e2 -> s3->e3
-//                     |_______↑
-//              last_team_end
-
-// Reverse(s2, e2) 后:
-// 1. 需要将 s1(原 last_team_end) -> e2(即修改last_team_end->next)
-// 2. 再更新 last_team_end -> s2
-
-// s1<-e1  s2<-e2   s3->e3
-// |_______|____↑   ↑
-//         |________|
-//    last_team_end
-
 class Solution {
 public:
     ListNode* reverseKGroup(ListNode* head, int k) {
-        auto start{head};
-        auto end{TeamEnd(start, k)};
-        if (!end) {
-            return head;
-        }
-        // 第一组特殊处理(需要返回头节点)
-        head = end;
-        Reverse(start, end);
-
-        auto last_team_end{start};  // 翻转后 start 即上一组尾节点
-        while (last_team_end->next) {
-            start = last_team_end->next;
-            end = TeamEnd(start, k);
-            if (!end) {
-                return head;
-            }
-            Reverse(start, end);
-            last_team_end->next = end;
-            last_team_end = start;
+        // 统计节点个数 n, 方便在不足 k 时退出
+        int n{0};
+        for (auto curr{head}; curr; curr = curr->next) {
+            ++n;
         }
 
-        return head;
-    }
+        ListNode dummy{0, head};
+        auto p0{&dummy};
 
-    // 辅助函数
-public:
-    // 从 s 开始找第 k 个节点(包括 s 在内)
-    // HACK: 即该组最后一个节点
-    ListNode* TeamEnd(ListNode* s, int k) {
-        // 因为包含 iter 因此 --k 前缀递减
-        while (--k && s) {
-            s = s->next;
-        }
-        return s;  // NOTE: 如果个数不够这里会返回 nullptr
-    }
-
-    // 翻转当前组节点
-    // HACK:
-    // s -> a -> b -> c -> e -> 下一组的开始节点
-    //             reverse ↓
-    // e -> c -> b -> a -> s -> 下一组的开始节点
-    void Reverse(ListNode* s, ListNode* e) {
-        e = e->next;  // 保存下一组开始节点
-
-        // HACK: 翻转链表固定辅助变量?
-        // 普通翻转只要 prev 和 next, s 会改变
-        // 这里需要 curr 是因为 s 不能变, 最后要指向下一组开始节点
         ListNode* prev{nullptr};
-        ListNode* curr{s};
-        ListNode* next{nullptr};
-
-        // NOTE: 循环条件
-        // NOTE: 反转逻辑!!!
-        while (curr != e) {  // HACK: 这里 e 之前已经变成 e->next 了
-            next = curr->next;
-            curr->next = prev;
-            prev = curr;  // 更新 prev
-            curr = next;  // 更新 curr
+        auto curr{head};
+        // k 个一组处理
+        for (; n >= k; n -= k) {
+            for (int i{0}; i < k; ++i) {  // 反转 k 个, 同: 一次反转部分链表
+                auto next{curr->next};
+                curr->next = prev;
+                prev = curr;
+                curr = next;
+            }
+            // 反转后, 原区间左端点指向 nullptr (最开始的 prev 初始值)
+            // 所以要重新指向区间右端点右边那个 (其实就是现在的 curr)
+            auto next{p0->next};    // p0->next 就是原左端点, 会变成下一轮反转的 p0
+            p0->next->next = curr;  // p0->next 就是原左端点
+            p0->next = prev;        // p0 要指向现在的 prev(即右端点)
+            p0 = next;              // 更新 p0 NOTE: 因为多次反转部分, 因此需要更新 p0
         }
 
-        s->next = e;  // 指向下一组开始节点
+        return dummy.next;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

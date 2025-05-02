@@ -3,6 +3,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <list>
 #include <map>
@@ -22,16 +23,15 @@
 
 using namespace std;
 
-// 树的直径和最大深度的联系
+// 思考: 树的直径和最大深度(最长链)的联系
 
-// 直径会在某个节点「拐弯」, 所以枚举每个节点
-
+// 直径会在某个节点「拐弯」, 所以枚举每个节点, 更新直径
 // 在当前节点「拐弯」的直径长度
 //                ↓
 // 2 + 左子树的最长链 + 右子树的最长链
 
-// 空节点: 链长 -1
-// 叶节点: 链长 0
+// 空节点的链长: -1
+// 叶节点的链长: 0
 
 // 以当前节点为根的子树的最长链
 //                ↓
@@ -53,16 +53,24 @@ class Solution {
 public:
     int diameterOfBinaryTree(TreeNode* root) {
         int ans{0};
-        auto dfs = [&](auto&& self, TreeNode* node) -> int {
+        std::function<int(TreeNode*)> dfs = [&](TreeNode* node) -> int {
             if (!node) {
                 return -1;  // 空节点链长: -1
             }
-            int l_len{self(self, node->left)};
-            int r_len{self(self, node->right)};
-            ans = max(ans, l_len + r_len + 2);  // 这里 + 2
-            return max(l_len, r_len) + 1;       // 当前子树最大链长(这里 + 1)
+            int l_depth{dfs(node->left)};   // 左子树最长链(最大深度)
+            int r_depth{dfs(node->right)};  // 右子树最长链(最大深度)
+
+            // 在当前节点「拐弯」的直径长度
+            //                ↓
+            // 2 + 左子树的最长链 + 右子树的最长链
+            ans = max(ans, 2 + l_depth + r_depth);
+
+            // 以当前节点为根的树的最长链
+            //                ↓
+            // 1 + max(左子树的最长链, 右子树的最长链)
+            return 1 + max(l_depth, r_depth);
         };
-        dfs(dfs, root);  // 递归入口
+        dfs(root);  // 递归入口
         return ans;
     }
 };

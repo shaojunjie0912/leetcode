@@ -5,7 +5,7 @@
 
 using namespace std;
 
-// 队列
+// NOTE: 队列
 
 // @leet start
 /**
@@ -19,9 +19,34 @@ using namespace std;
  *     TreeNode(int x, TreeNode *left, TreeNode *right) : val(x), left(left), right(right) {}
  * };
  */
+
 class Solution {
 public:
-    vector<vector<int>> levelOrder(TreeNode* root) {}
+    vector<vector<int>> levelOrder(TreeNode* root) {
+        if (!root) {
+            return {};
+        }
+        queue<TreeNode*> queue;
+        vector<vector<int>> res;
+        queue.push(root);
+        while (!queue.empty()) {
+            int size = queue.size();  // NOTE: 提前获取 size
+            vector<int> in_res;
+            while (size--) {
+                auto top{queue.front()};
+                in_res.push_back(top->val);
+                queue.pop();
+                if (top->left) {
+                    queue.push(top->left);
+                }
+                if (top->right) {
+                    queue.push(top->right);
+                }
+            }
+            res.push_back(in_res);
+        }
+        return res;
+    }
 };
 // @leet end
 

@@ -21,40 +21,58 @@
 
 using namespace std;
 
-// NOTE:
-// 1. 前缀和: 子数组 [i, j] 的和 = s[j+1] - s[i] = k
-// 2. 类比两数之和 (本题是两数之差 = target)
-// 3. 哈希表: 向右枚举 s[j], 查询左边是否有 target - s[j]
+// 前缀和 + 哈希表
+// 但这里计算答案数量, 而不是索引, 注意哈希表的值是出现次数计数
 
-// DEPRECATED:
-// 本来我是用一个 set, 以为只要出现过答案就 +1
-// 但是应该做 (前缀和, 次数) 这样的键值对映射
-// 因为前缀可能存在重复, 某个前缀和可能会出现多次
-// 但你 set 就只能去重保存一份, 所以漏掉了几个子数组的左边界
+// 1. 前缀和: 子数组 [i, j] 的和 = pre_sum[j+1] - pre_sum[i] = k
+// 2. 类比两数之和 (本题是两数之差 = k)
+// 3. 哈希表: 向右枚举 pre_sum[j], 查询左边是否有 pre_sum[j] - k (用范围 for)
 
 // @leet start
 class Solution {
 public:
+#if 1
+    // 一次遍历 (同时计算前缀和 + 判断哈希表)
     int subarraySum(vector<int>& nums, int k) {
         int n = nums.size();
-        // 前缀和数组
-        vector<int> s(n + 1);
-        for (int i = 0; i < n; ++i) {
-            s[i + 1] = s[i] + nums[i];
-        }
         int ans{0};
-        // 哈希表 (前缀和, 出现次数)
+
         unordered_map<int, int> cnt;
-        // sum(nums[i]...nums[j]) = s[j+1] - s[i] = k
-        // 遍历 s[j] 查询左侧是否有 s[j] - k
-        for (auto sj : s) {  // 直接用范围for遍历, 不需要索引
-            if (cnt.contains(sj - k)) {
-                ans += cnt[sj - k];
+        cnt[0] = 1;  // 初始值 (对应s[0]=0)
+
+        int pre_sum{0};  // 前缀和 (单个变量, 这里 s[0]=0)
+        for (auto x : nums) {
+            pre_sum += x;
+            if (cnt.contains(pre_sum - k)) {
+                ans += cnt[pre_sum - k];
             }
-            ++cnt[sj];
+            ++cnt[pre_sum];
         }
         return ans;
     }
+#else
+    // 两次遍历 (先计算前缀和, 再判断哈希表)
+    int subarraySum(vector<int>& nums, int k) {
+        int n = nums.size();
+
+        // 前缀和数组
+        vector<int> pre_sum(n + 1);
+        for (int i = 0; i < n; ++i) {
+            pre_sum[i + 1] = pre_sum[i] + nums[i];
+        }
+
+        int ans{0};
+        unordered_map<int, int> cnt;  // 哈希表 (前缀和, 出现次数)
+        for (auto sj : pre_sum) {     // 范围 for 遍历 s[j] 查询左侧是否有 s[j] - k
+            if (cnt.contains(sj - k)) {
+                ans += cnt[sj - k];
+            }
+            ++cnt[sj];  // NOTE: 无论是否包含都要 ++, 否则就漏掉了键
+        }
+
+        return ans;
+    }
+#endif
 };
 // @leet end
 

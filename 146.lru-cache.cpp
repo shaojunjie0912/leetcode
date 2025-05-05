@@ -27,17 +27,16 @@ using namespace std;
 // 哈希表保存 key 和 DNode 映射, 方便快速查询是否存在
 
 // @leet start
+struct DNode {
+    int key;
+    int value;
+    DNode* prev;
+    DNode* next;
+
+    DNode(int k = 0, int v = 0) : key(k), value(v) {}
+};
+
 class LRUCache {
-    // 双向链表节点
-    struct DNode {
-        int key;
-        int value;
-        DNode* prev;
-        DNode* next;
-
-        DNode(int k = 0, int v = 0) : key(k), value(v) {}
-    };
-
 public:
     LRUCache(int capacity) : capacity(capacity), dummy(new DNode{}) {
         // NOTE: 初始 dummy 的 prev 和 next 均指向自身

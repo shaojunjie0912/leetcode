@@ -15,6 +15,8 @@ using namespace std;
 //      p&q 都在右子树: 返回递归右子树的结果
 //      p&q 不在任何子树: 返回空节点
 
+// 思考: 递归返回的不是 p/q 而是结果, 我一开始错以为是 p / q 了还在想应该返回先找到的那个
+
 // @leet start
 /**
  * Definition for a binary tree node.
@@ -28,29 +30,25 @@ using namespace std;
 class Solution {
 public:
     TreeNode* lowestCommonAncestor(TreeNode* root, TreeNode* p, TreeNode* q) {
-        // 如果当前节点为 null/p/q, 返回对应 null/p/q
+        // 1. 当前节点是空节点 / 就是 p / 就是 q
         if (!root || root == p || root == q) {
             return root;
         }
-        auto l{lowestCommonAncestor(root->left, p, q)};   // 左递归
-        auto r{lowestCommonAncestor(root->right, p, q)};  // 右递归
 
-        // NOTE: p,q 分别在两棵子树中: 返回当前节点
-        if (l && r) {
+        // 2. 其他情况 (递归左右子树)
+        auto left{lowestCommonAncestor(root->left, p, q)};
+        auto right{lowestCommonAncestor(root->right, p, q)};
+
+        // 2.1 左右子树都找到: 返回当前节点
+        if (left && right) {
             return root;
         }
-        // 只有左边有: 返回左边递归结果
-        if (l) {
-            return l;
-        }
-        // 只有右边有: 返回右边递归结果
-        else {
-            return r;
-        }
+        // 2.2 只有左子树找到
+        // 2.3 只有右子树找到
+        // 2.4 左右子树都没找到
+        return left ? left : right;  // 包含了 nullptr
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

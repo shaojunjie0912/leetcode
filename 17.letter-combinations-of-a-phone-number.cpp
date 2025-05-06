@@ -15,32 +15,30 @@ using namespace std;
 class Solution {
 public:
     // 数字 -> 字符数组映射
-    string MAPPING[10]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    string const mapping[10]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
 
     vector<string> letterCombinations(string digits) {
-        int n = digits.size();
-        if (n == 0) {  // 判空
+        if (digits.empty()) {  // 判空
             return {};
         }
 
-        string path(n, 0);   // path 长度与 digits 相同
-        vector<string> ans;  // 存储 paths
+        int n = digits.size();
+        string path(n, 0);  // (n, 0) 构造 path 长度与 digits 相同
+        vector<string> ans;
 
-        // 递归 lambda 写法
-        auto dfs = [&](auto&& self, int i) {  // NOTE: 注意写法
-            // 边界条件
+        function<void(int)> dfs = [&](int i) -> void {
+            // 边界条件, 记录答案
             if (i == n) {
                 ans.push_back(path);
                 return;
             }
-            // 非边界条件
-            for (char c : MAPPING[digits[i] - '0']) {  // 对应数组下标
-                // 直接覆盖, 对应回溯: 删掉原来的再添加新的
-                path[i] = c;
-                self(self, i + 1);  // NOTE: 注意写法
+            // 非边界条件, 理解这个 for 循环,
+            for (char c : mapping[digits[i] - '0']) {
+                path[i] = c;  // 枚举第 i 个字母 (直接覆盖就不需要恢复现场了)
+                dfs(i + 1);   // 构造 >= i+1 的部分
             }
         };
-        dfs(dfs, 0);  // NOTE: 注意写法, 且从 0 开始
+        dfs(0);  // 递归入口
         return ans;
     }
 };

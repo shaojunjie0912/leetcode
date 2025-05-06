@@ -13,7 +13,7 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-#if 1
+#if 0
     // 输入角度: 枚举第 i 个数选或不选
     vector<vector<int>> subsets(vector<int>& nums) {
         vector<vector<int>> ans;
@@ -43,16 +43,20 @@ public:
         vector<vector<int>> ans;
         vector<int> path;
         int n = nums.size();
+
         // dfs(i) 的 i 表示现在要枚举选 nums[i] 到 nums[n-1] 中的一个数
         function<void(int)> dfs = [&](int i) -> void {
             // 不需要边界条件 i==n return 因为当 i==n 时不会进入循环
-            ans.push_back(path);           // 每个节点都是答案
+            ans.push_back(path);  // 每个节点都是答案
+
+            // 用 j 遍历 i 到 n - 1
             for (int j = i; j < n; ++j) {  // 枚举选哪一个
-                path.push_back(nums[j]);
-                dfs(j + 1);
-                path.pop_back();  // 恢复现场
+                path.push_back(nums[j]);   //
+                dfs(j + 1);                // 遍历剩下的 j + 1 到 n - 1
+                path.pop_back();           // 恢复现场
             }
         };
+
         dfs(0);
         return ans;
     }

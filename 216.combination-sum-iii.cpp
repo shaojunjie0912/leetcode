@@ -14,7 +14,7 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-#if 0
+#if 1
     // 答案角度:
     vector<vector<int>> combinationSum3(int k, int n) {
         vector<vector<int>> ans;
@@ -32,15 +32,15 @@ public:
                 return;
             }
 
-            if (d==0 ) {
+            if (d == 0) {
                 ans.push_back(path);
             }
-            
+
             // 使用 j 遍历倒序枚举 [1, i]
             for (int j = i; j >= 1; --j) {
-                path.push_back(j);//
+                path.push_back(j);  //
                 dfs(j - 1, t - j);  // 枚举剩下的 [1, j - 1]
-                path.pop_back();// 恢复现场
+                path.pop_back();
             }
         };
         dfs(9, n);

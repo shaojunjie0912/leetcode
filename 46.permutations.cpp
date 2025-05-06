@@ -8,29 +8,38 @@ using namespace std;
 
 // 排列型回溯
 
+// 全排列区别于组合: 只要顺序不同, 就可以重选并且代表不同排列, 但是组合不行
+
+// 选了一个数后, 告诉下面还可以选哪些数
+
+// j 循环里面有一个 dfs 是 i + 1, 跟之前不一样, 感觉是跟 path 中 i 一样
+
 // @leet start
 class Solution {
 public:
     vector<vector<int>> permute(vector<int>& nums) {
-        int n = nums.size();
         vector<vector<int>> ans;
-        vector<int> path(n);
-        vector<int> on_path(n);
-        auto dfs = [&](auto&& self, int i) {
+        int n = nums.size();
+        vector<int> path(n);     // 所有排列长度相同, 都是 n, 这里直接覆盖不需要恢复现场
+        vector<int> on_path(n);  // 记录选了哪些数字
+
+        function<void(int)> dfs = [&](int i) -> void {
             if (i == n) {
                 ans.push_back(path);
                 return;
             }
+            // 排列可以重选的, 只要顺序不同即可, 所以 j 从 0 而不是 i
             for (int j = 0; j < n; ++j) {
-                if (!on_path[j]) {
-                    path[i] = nums[j];
-                    on_path[j] = 1;  // 已选上
-                    self(self, i + 1);
-                    on_path[j] = 0;  // 恢复现场
+                if (!on_path[j]) {       // 只取还没被选的数字
+                    path[i] = nums[j];   // 直接覆盖, 注意这里是 path[i] 和 nums[j]
+                    on_path[j] = true;   // 标记为已经选上
+                    dfs(i + 1);          // NOTE: 这里 dfs 是 i + 1, 难道跟 path 中的 i 对应?
+                    on_path[j] = false;  // 恢复现场
                 }
             }
         };
-        dfs(dfs, 0);
+
+        dfs(0);
         return ans;
     }
 };

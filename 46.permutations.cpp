@@ -6,19 +6,18 @@
 
 using namespace std;
 
-// 排列型回溯
+// 排列型回溯: 枚举选哪个
 
-// 枚举选哪个
-
-// 全排列区别于组合: 只要顺序不同, 就可以重选并且代表不同排列, 但是组合不行
-
-// 选了一个数后, 告诉下面还可以选哪些数 (可以用集合, 也可以用数组)
+// 全排列区别于组合: 只要顺序不同, 就可以重选并且代表不同排列
+// 所以选了一个数后, 可以用集合/数组告诉下面还可以选哪些数
+// 但是 C++ 集合没有 Python 好用
 
 // j 循环里面有一个 dfs 是 i + 1, 跟之前不一样, 感觉是跟 path 中 i 一样k
 
 // @leet start
 class Solution {
 public:
+    // on_path 写法, 更通用
     vector<vector<int>> permute(vector<int>& nums) {
         vector<vector<int>> ans;
         int n = nums.size();

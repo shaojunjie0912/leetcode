@@ -22,9 +22,14 @@
 
 using namespace std;
 
-// 双向链表节点 DNode
+// 双向链表节点 DNode (包含 key 和 value)
 // dummy 哨兵节点, 初始化时 prev 和 next 均指向自身
 // 哈希表保存 key 和 DNode 映射, 方便快速查询是否存在
+// 辅助函数:
+// 1. Remove(DNode* x): (抽出) 删除一个节点
+// 2. PushFront(DNode* x): (放在最上面) 在头部添加一个节点
+// 3. GetNode(int key): (抽出并放在最上面) 获取 key 对应的节点, 并将节点移动到链表头部
+// 重点关注 <放在最上面> 这个操作!
 
 // @leet start
 struct DNode {

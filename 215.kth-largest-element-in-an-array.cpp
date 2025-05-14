@@ -5,72 +5,38 @@
 
 using namespace std;
 
+// 随机选择基准数字 p 注意是 rand()%nums.size()
+// 划分 big equal small
+// 递归 big small 最后返回 p
+
 // @leet start
 class Solution {
 public:
-    int findKthLargest(vector<int>& nums, int k) {
-        // 举例
-        // 数值:             7 8 9
-        // 索引/排序第 k 小: 0 1 2
-        // 第 k 大:          3 2 1
-        return RandomSelect(nums, nums.size() - k);
-    }
+    int findKthLargest(vector<int>& nums, int k) { return QuickSelect(nums, k); }
 
-    int Random(int min, int max) {
-        // std::random_device 类重载了 ()
-        // std::uniform_int_distribution 类重载了 ()
-        std::mt19937 gen{std::random_device{}()};
-        std::uniform_int_distribution<int> dist{min, max};
-        return dist(gen);
-    }
-    // 随机选择算法
-    // NOTE: 找到数组中排序在 i 位置的元素
-    int RandomSelect(vector<int>& nums, int i) {
-        int ans;
-        int l = 0;
-        int r = nums.size() - 1;
-        while (true) {                   // NOTE: 这里边界条件之前写的是 l<=r, 感觉就是死循环
-            int x = nums[Random(l, r)];  // NOTE: 索引取值
-            auto [left, right] = Partition(nums, l, r, x);
-            // 如果 i 在边界以左
-            if (i < left) {
-                r = left - 1;
-            }
-            // 如果 i 在边界以右
-            else if (i > right) {
-                l = right + 1;
-            }
-            // 否则, i 在边界中
-            else {
-                ans = nums[i];
-                break;
-            }
-        }
-        return ans;
-    }
+    int QuickSelect(vector<int>& nums, int k) {
+        // 随机选择基准数字
+        int p = nums[rand() % nums.size()];
 
-    // 荷兰国旗
-    std::pair<int, int> Partition(vector<int>& nums, int l, int r, int x) {
-        int a = l;        // 左边界
-        int b = r;        // 右边界
-        int i = l;        // 循环遍历指针
-        while (i <= b) {  // NOTE: 边界条件呢
-            if (nums[i] < x) {
-                std::swap(nums[i], nums[a]);
-                ++a;
-                ++i;
-            } else if (nums[i] > x) {
-                std::swap(nums[i], nums[b]);
-                --b;
-            } else {
-                ++i;
-            }
+        // 遍历 nums 划分 >, =, <
+        vector<int> big, equal, small;
+        for (auto& x : nums) {
+            x > p ? big.push_back(x) : (x < p ? small.push_back(x) : equal.push_back(x));
         }
-        return {a, b};
+        // 第 k 大在 big 中
+        if (k <= big.size()) {
+            return QuickSelect(big, k);
+        }
+
+        // 第 k 大在 small 中
+        if (k > big.size() + equal.size()) {
+            return QuickSelect(small, k - big.size() - equal.size());  // NOTE: 这里得改 k
+        }
+
+        // 第 k 大在 equal 中
+        return p;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

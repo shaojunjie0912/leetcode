@@ -2,6 +2,7 @@
 #include <climits>
 #include <cmath>
 #include <cstdint>
+#include <functional>
 #include <iostream>
 #include <map>
 #include <queue>
@@ -32,7 +33,7 @@ class Solution {
 
 public:
     int lengthOfLIS(vector<int>& nums) {
-        Method method{DP_F};
+        Method method{DFS_MEMO};
         switch (method) {
             case DFS_MEMO: {
                 return SolveDfsMemo(nums);
@@ -48,19 +49,22 @@ private:
     int SolveDfsMemo(vector<int>& nums) {
         int n = nums.size();
         vector memo(n, -1);  // 记忆数组
-        auto dfs = [&](auto&& self, int i) -> int {
+        function<int(int)> dfs = [&](int i) -> int {
             // NOTE: 没有写边界条件, 因为如果 i = 0 循环不会执行
             int res{0};
             for (int j = 0; j < i; ++j) {  // 枚举「严格」小于 i 的 j
                 if (nums[j] < nums[i]) {   // 如果 nums[j] < nums[i] 则继续递归
-                    res = max(res, self(self, j));
+                    if (memo[j] == -1) {
+                        memo[j] = dfs(j);
+                    }
+                    res = max(res, memo[j]);
                 }
             }
             return res + 1;  // +1 表示 i
         };
         int ans{0};
         for (int i = 0; i < n; ++i) {  // 遍历整个数组递归
-            ans = max(ans, dfs(dfs, i));
+            ans = max(ans, dfs(i));
         }
         return ans;
     }

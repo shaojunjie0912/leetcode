@@ -6,6 +6,8 @@
 
 using namespace std;
 
+// 如果 begin 都没找到, 则肯定没 target
+
 // @leet start
 class Solution {
 public:

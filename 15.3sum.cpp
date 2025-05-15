@@ -8,6 +8,16 @@ using namespace std;
 
 // NOTE:
 // 排序 + 双指针, 转化为两数之和: nums[j] + nums[k] == -nums[i]
+// 外部循环遍历每一个 i (0 ~ n-3), 内部循环 j 从 i+1 开始, k 从 n-1 开始
+// i    i + 1        n - 1
+// i      j ->      <- k
+
+// 外部循环: 一开始跳过重复的 i
+// 内部循环: 在 == 0 的时候, 跳过重复的 j 和 k
+
+// 两个小优化:
+// 1. 跟最小两数相加都 > 0   HACK: break
+// 2. 跟最大两数相加都 < 0   HACK: continue
 
 // @leet start
 class Solution {

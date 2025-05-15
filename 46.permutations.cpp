@@ -10,9 +10,9 @@ using namespace std;
 
 // 全排列区别于组合: 只要顺序不同, 就可以重选并且代表不同排列
 // 所以选了一个数后, 可以用集合/数组告诉下面还可以选哪些数
-// 但是 C++ 集合没有 Python 好用
+// C++ 用 vector<int> on_path 假装 bool 数组
 
-// j 循环里面有一个 dfs 是 i + 1, 跟之前不一样, 感觉是跟 path 中 i 一样k
+// j 循环里面有一个 dfs 是 i + 1, 跟之前不一样, 感觉是跟 path 中 i 一样
 
 // @leet start
 class Solution {

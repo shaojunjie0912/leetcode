@@ -5,7 +5,8 @@
 
 using namespace std;
 
-// dummy + 进位 carry
+// 1. dummy
+// 2. carry: 节点和, 可以求出进位(carry / 10) 数位(carry % 10)
 // 本题链表节点代表数位从低到高, 遍历过程自然可以进位
 
 // @leet start

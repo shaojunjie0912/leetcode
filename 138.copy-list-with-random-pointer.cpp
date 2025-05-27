@@ -28,35 +28,47 @@ public:
 class Solution {
 public:
     Node* copyRandomList(Node* head) {
-        // 判空
+        // NOTE: 判空
         if (!head) {
-            return nullptr;
+            return head;
         }
 
-        // 1. 复制 val (跳 2 步!!)
-        // NOTE: 这里循环内改变了 curr->next 所以是跳 2 步
-        for (auto curr{head}; curr; curr = curr->next->next) {
-            // 复制新节点, 放在 curr 和 curr->next 之间
-            curr->next = new Node{curr->val, curr->next, nullptr};
+        auto curr{head};
+        // 生成复制节点插到原节点后面
+        while (curr) {
+            auto next{curr->next};
+            auto copy_node{new Node{curr->val}};
+            curr->next = copy_node;
+            copy_node->next = next;
+            curr = next;
         }
 
-        // 2. 复制 random (跳 2 步)
-        for (auto curr{head}; curr; curr = curr->next->next) {
-            // NOTE: random 判空
+        // 更新 random 链
+        curr = head;
+        while (curr) {
+            // random 可能是 nullptr
             if (curr->random) {
                 curr->next->random = curr->random->next;
             }
+            curr = curr->next->next;
         }
 
-        auto new_head{head->next};
-        // 3. 分离 next
-        for (auto curr{head}; curr; curr = curr->next) {
+        // 拆分 next
+        auto copy_head{head->next};
+        // curr->copy->n1->c1->n2->c2->nullptr
+        // NOTE: 因为 curr 下一轮循环要移动到 n1, 因此需要确保 curr->next->next
+        curr = head;
+        while (curr->next->next) {
             auto copy{curr->next};
-            curr->next = copy->next;                               // 恢复原节点的 next
-            copy->next = curr->next ? curr->next->next : nullptr;  // 设置新节点的 next
+            auto copy_next{copy->next};
+            curr->next = copy_next;        // 原节点 next
+            copy->next = copy_next->next;  // 新节点 next
+            curr = curr->next;             // NOTE: 已经修改指向, 因此直接 curr->next
         }
+        // NOTE: copy 链已经完成, curr 链还需要指向 nullptr
+        curr->next = nullptr;
 
-        return new_head;
+        return copy_head;
     }
 };
 // @leet end

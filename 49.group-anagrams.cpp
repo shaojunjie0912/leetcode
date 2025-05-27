@@ -6,7 +6,9 @@
 
 using namespace std;
 
-// 字母异位词按字典序排序后相同, 可以当成 key
+// NOTE:
+// key: 按<字典序排序>后的单词
+// value: vector<string>
 
 // @leet start
 class Solution {

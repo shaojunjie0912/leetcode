@@ -26,12 +26,10 @@ using namespace std;
 class Solution {
 public:
     void moveZeroes(vector<int>& nums) {
-        int room = 0;  // HACK: (始终维护) 最左边的空位
-        for (int i = 0; i < nums.size(); ++i) {
-            if (nums[i] == 0) {  // 当前数是 0 不操作
-                continue;
-            } else {  // 当前数非 0 则交换最左边空位和当前数
-                std::swap(nums[room++], nums[i]);
+        int room = 0;           // HACK: 最左边的空位索引
+        for (auto& x : nums) {  // NOTE: 引用!!
+            if (x) {            // 当前数非 0 则交换最左边空位和当前数
+                std::swap(nums[room++], x);
             }
         }
     }

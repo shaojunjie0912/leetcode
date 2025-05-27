@@ -15,16 +15,16 @@ class Solution {
 public:
     // left right 谁小, 以谁为边界开始结算, 然后小的往中间移动
     int maxArea(vector<int>& height) {
-        int left = 0, right = height.size() - 1;
         int ans{0};
-        while (left < right) {
-            int area = (right - left) * std::min(height[right], height[left]);
+        int n = height.size();
+        int l{0}, r{n - 1};
+        while (l < r) {
+            int area = (r - l) * min(height[l], height[r]);
             ans = max(ans, area);
-            // 小的往中间移动
-            if (height[left] > height[right]) {
-                --right;
+            if (height[l] < height[r]) {
+                ++l;
             } else {
-                ++left;
+                --r;
             }
         }
         return ans;

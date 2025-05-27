@@ -17,14 +17,15 @@ public:
         int ans{0};
         for (int l{0}, r{0}; r < s.size(); ++r) {
             ++curr_map[s[r]];
-            while (curr_map[s[r]] > 1) {  // 如果右侧是重复字符, 则左端点一直右移
-                // 思考: <左>端点右移是因为<右>端点之前出现过
-                // 记得 --左端点字符计数
+            // 如果<右>侧字符出现过, 则<左>端点一直右移
+            while (curr_map[s[r]] > 1) {  // NOTE: 是 s[r]
+                // NOTE:
+                // 先左端点字符计数 - 1
+                // 再左端点右移 + 1
                 --curr_map[s[l]];
                 ++l;
             }
-            ans = max(ans,
-                      r - l + 1);  // 卡在没想到长度如何计算, 该放在循环后还是前
+            ans = max(ans, r - l + 1);
         }
         return ans;
     }

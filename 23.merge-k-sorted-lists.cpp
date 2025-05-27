@@ -38,10 +38,11 @@ using namespace std;
  */
 class Solution {
 public:
-    // 最小堆
+#if 0
+    // 方法一: 最小堆
     ListNode* mergeKLists(vector<ListNode*>& lists) {
-        // 最小堆
-        auto cmp = [](ListNode* node1, ListNode* node2) { return node1->val > node2->val; };
+        // NOTE: cmp 为 true 时会将 n2 排在前面
+        auto cmp = [](ListNode* n1, ListNode* n2) { return n1->val > n2->val; };
         priority_queue<ListNode*, vector<ListNode*>, decltype(cmp)> pq;
 
         // 所有非空链表头节点入堆
@@ -66,5 +67,45 @@ public:
 
         return dummy.next;
     }
+#else
+    // 方法二: 递归
+    ListNode* mergeKLists(vector<ListNode*>& lists) {
+        int n = lists.size();
+        return MergeKLists(lists, 0, n - 1);
+    }
+
+    // Merge lists[i]~lists[j]
+    ListNode* MergeKLists(vector<ListNode*>& lists, int i, int r) {
+        if (i > r) {
+            return nullptr;
+        }
+        if (i == r) {
+            return lists[i];
+        }
+        // 合并左边一半
+        auto l1{MergeKLists(lists, i, i + (r - i) / 2)};
+        // 合并右边一半
+        auto l2{MergeKLists(lists, i + (r - i) / 2 + 1, r)};
+        // 合并左右
+        return Merge2Lists(l1, l2);
+    }
+
+    ListNode* Merge2Lists(ListNode* l1, ListNode* l2) {
+        ListNode dummy{};
+        auto curr{&dummy};
+        while (l1 && l2) {
+            if (l1->val < l2->val) {
+                curr->next = l1;
+                l1 = l1->next;
+            } else {
+                curr->next = l2;
+                l2 = l2->next;
+            }
+            curr = curr->next;
+        }
+        curr->next = l1 ? l1 : l2;
+        return dummy.next;
+    }
+#endif
 };
 // @leet end

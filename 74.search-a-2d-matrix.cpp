@@ -22,7 +22,7 @@
 using namespace std;
 
 // 二分查找
-// 对于 m 行 n 列矩阵: 将索引 i 转化为 matrix[i / n][i % n]
+// NOTE: 对于 m 行 n 列矩阵: 将索引 i 转化为 matrix[i / n][i % n]
 
 // @leet start
 class Solution {
@@ -39,8 +39,6 @@ public:
                 r = mid - 1;
             }
         }
-        // true 的条件:
-        // 1. l 在
         return (l < m * n) && (matrix[l / n][l % n] == target);
     }
 };

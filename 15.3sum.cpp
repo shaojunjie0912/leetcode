@@ -52,6 +52,9 @@ public:
                 } else if (sum < 0) {
                     ++j;
                 } else {
+                    // NOTE: 只有在满足条件的分支才去重!!
+                    // 不符条件分支意义不大, 因为能快速迭代到下一轮
+                    // NOTE: 三元组是值不是索引!
                     ans.push_back({nums[i], nums[j], nums[k]});
                     // 跳过重复的 j (额外条件: j < k)
                     ++j;

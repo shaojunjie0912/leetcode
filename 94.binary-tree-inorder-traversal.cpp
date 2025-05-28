@@ -20,7 +20,8 @@ using namespace std;
  */
 class Solution {
 public:
-    // NOTE: 递归
+#if 1
+    // 递归
     vector<int> inorderTraversal(TreeNode* root) {
         if (!root) {
             return {};
@@ -38,9 +39,9 @@ public:
         nums.push_back(root->val);
         PostOrder(root->right, nums);
     }
+#else
+#endif
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

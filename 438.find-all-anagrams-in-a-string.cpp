@@ -21,7 +21,10 @@
 
 using namespace std;
 
-// 定长滑窗 + c++ std::array 查表 (能用 == 比较)
+// 滑窗用一个 i 即可
+// 定长滑窗 + c++ std::array 查表, p 一个表, s 一个表, 能用 == 比较
+// array 大小为 26, 无论是<入>还是<出>小写字母需要减去 'a'
+// 答案是滑窗左边界索引即 i - k + 1
 
 // @leet start
 class Solution {

@@ -39,25 +39,24 @@ public:
 #if 1
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         int n = inorder.size();
-        unordered_map<int, int> index_map;
+        unordered_map<int, int> inorder_map;
         for (int i = 0; i < n; ++i) {
-            index_map[inorder[i]] = i;  // 记录 inorder 元素和对应索引
+            inorder_map[inorder[i]] = i;  // 记录 inorder 元素和对应索引
         }
-        // pre: [pre_l, pre_r)
-        // in: [in_l, in_r)
+        // [pre_l, pre_r] [in_l, in_r]
+        // 理解为 pre 和 in 的左右边界, 而不是左右子树的 pre 和 in
         function<TreeNode*(int, int, int, int)> dfs = [&](int pre_l, int pre_r, int in_l,
                                                           int in_r) -> TreeNode* {
-            // NOTE: 边界条件: 左闭右开区间, 跟 vector 区间差不多?
-            if (pre_l == pre_r) {
+            if (pre_l > pre_r) {
                 return nullptr;
             }
             // pre_l: 前序遍历结果数组第一个元素
-            int left_size = index_map[preorder[pre_l]] - in_l;
-            auto left = dfs(pre_l + 1, pre_l + 1 + left_size, in_l, in_l + left_size);
-            auto right = dfs(pre_l + 1 + left_size, pre_r, in_l + 1 + left_size, in_r);
-            return new TreeNode{preorder[pre_l], left, right};
+            int left_size = inorder_map[preorder[pre_l]] - in_l;  // 不要 preorder 第一个即根
+            auto left_node = dfs(pre_l + 1, pre_l + left_size, in_l, in_l + left_size - 1);
+            auto right_node = dfs(pre_l + left_size + 1, pre_r, in_l + left_size + 1, in_r);
+            return new TreeNode{preorder[pre_l], left_node, right_node};
         };
-        return dfs(0, n, 0, n);
+        return dfs(0, n - 1, 0, n - 1);
     }
 #else
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {

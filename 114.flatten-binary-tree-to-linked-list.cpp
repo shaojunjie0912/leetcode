@@ -25,7 +25,7 @@ using namespace std;
 
 // 法一: 递归 + 头插法
 // 先递归右子树 -> 左子树 -> 中, 从从后往前插节点
-// 要用到额外一个 TreeNode* head 变量
+// 要用到额外一个 TreeNode* prev 变量
 
 // 法二: 分治
 
@@ -57,9 +57,9 @@ using namespace std;
  */
 class Solution {
 public:
-#if 0
+#if 1
     // 法一: 递归 + 头插法
-    TreeNode* head{};
+    TreeNode* prev{nullptr};
     void flatten(TreeNode* root) {
         if (!root) {
             return;
@@ -67,10 +67,9 @@ public:
 
         flatten(root->right);
         flatten(root->left);
-        // 中 -> 左 -> 右 -> head
-        root->left = nullptr;  // 左指针始终 nullptr
-        root->right = head;    // 右指针指向 head
-        head = root;           // 更新 head
+        root->right = prev;    // 指向 prev
+        root->left = nullptr;  // 题目要求: 左指针始终 nullptr
+        prev = root;           // 更新 prev
     }
 #else
     // 法二: 分治

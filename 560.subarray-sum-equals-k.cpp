@@ -26,7 +26,7 @@ using namespace std;
 
 // 1. 前缀和: 子数组 [i, j] 的和 = pre_sum[j+1] - pre_sum[i] = k
 // 2. 类比两数之和 (本题是两数之差 = k) NOTE: pre_sum - k !!
-// 3. 哈希表: 向右枚举 pre_sum[j], 查询左边是否有 pre_sum[j] - k (用范围 for)
+// 3. 向右枚举 pre_sum[j], 查询左边是否有 pre_sum[j] - k (用范围 for)
 
 // @leet start
 class Solution {
@@ -40,10 +40,11 @@ public:
         cnt[0] = 1;  // 初始值 (对应s[0]=0)
 
         int pre_sum{0};  // 前缀和 (单个变量, 这里 s[0]=0)
+        // s[j+1] - s[i] = k
         for (auto x : nums) {
             pre_sum += x;
-            if (cnt.contains(pre_sum - k)) {
-                ans += cnt[pre_sum - k];  // NOTE: 不是 ++ 而是加 cnt
+            if (cnt.contains(pre_sum - k)) {  // NOTE: 到 s[j+1] 查询左边是否有 s[j+1]-k
+                ans += cnt[pre_sum - k];      // NOTE: 不是 +1 而是加 cnt
             }
             ++cnt[pre_sum];
         }

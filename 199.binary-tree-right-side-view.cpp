@@ -24,7 +24,7 @@
 using namespace std;
 
 // 法一: 层序遍历: 每层数组最后一个
-// 法二: 递归: 当某个深度首次遇到时, 就是右视图的节点
+// 法二: 递归: 当某个深度首次遇到(即数组目前大小=当前节点深度)时, 就是右视图的节点
 
 // @leet start
 /**
@@ -47,21 +47,21 @@ public:
             return {};
         }
         vector<int> ans;
-        queue<TreeNode*> nodes;
-        nodes.push(root);
-        while (!nodes.empty()) {
-            int size = nodes.size();
+        queue<TreeNode*> q;
+        q.push(root);
+        while (!q.empty()) {
+            int size = q.size();
             while (size--) {
-                auto node{nodes.front()};
-                nodes.pop();
+                auto node{q.front()};
+                q.pop();
                 if (size == 0) {  // NOTE: 上面 -- 了, 所以这边是 0
                     ans.push_back(node->val);
                 }
                 if (auto l = node->left) {
-                    nodes.push(l);
+                    q.push(l);
                 }
                 if (auto r = node->right) {
-                    nodes.push(r);
+                    q.push(r);
                 }
             }
         }
@@ -73,12 +73,12 @@ public:
         vector<int> ans;
         function<void(TreeNode*, int)> dfs = [&dfs, &ans](TreeNode* node, int depth) -> void {
             if (!node) {
-                return {};
+                return;
             }
-            if (depth == ans.size()) {  // 深度首次遇到
+            if (depth == ans.size()) {  // NOTE: 深度首次遇到
                 ans.push_back(node->val);
             }
-            dfs(node->right, depth + 1);  // 先递归右子树
+            dfs(node->right, depth + 1);  // NOTE: 先递归右子树!!!
             dfs(node->left, depth + 1);
         };
         dfs(root, 0);

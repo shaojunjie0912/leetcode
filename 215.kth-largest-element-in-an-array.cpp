@@ -5,13 +5,28 @@
 
 using namespace std;
 
-// 随机选择基准数字 p 注意是 rand()%nums.size()
-// 划分 big equal small
-// 递归 big small 最后返回 p
-
 // @leet start
 class Solution {
 public:
+#if 1
+    // 最小堆
+    int findKthLargest(vector<int>& nums, int k) {
+        // 维护大小为 k 的最小堆, 最终堆顶即第 k 大元素
+        priority_queue<int, vector<int>, greater<int>> min_heap;
+        for (auto& x : nums) {
+            min_heap.push(x);
+            if (min_heap.size() > k) {
+                min_heap.pop();
+            }
+        }
+        return min_heap.top();
+    }
+
+#else
+    // 快速选择
+    // 随机选择基准数字
+    // 划分 big equal small
+    // 递归 big small 最后返回 p
     int findKthLargest(vector<int>& nums, int k) { return QuickSelect(nums, k); }
 
     int QuickSelect(vector<int>& nums, int k) {
@@ -36,6 +51,7 @@ public:
         // 第 k 大在 equal 中
         return p;
     }
+#endif
 };
 // @leet end
 

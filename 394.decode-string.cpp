@@ -6,51 +6,51 @@
 
 using namespace std;
 
+// 两个辅助栈, 一个存乘数, 一个存字符串
+
 // @leet start
 class Solution {
 public:
-#if 1
-    // 方法一: 两个辅助栈, 一个存乘数, 一个存字符串
     string decodeString(string s) {
-        stack<int> multi_stack_;
-        stack<string> res_stack_;
-        string multi;  // NOTE: 后面需要+=再 stoi
-        string res;
-        for (auto &ch : s) {
-            if (('0' <= ch) && (ch <= '9')) {  // 乘数(HACK: 是 && 不是 ||)
-                multi += ch;
-            } else if (('a' <= ch) && (ch <= 'z')) {  // 英文字母(HACK: 是 && 不是 ||)
+        string res{};
+        int num;
+        stack<int> nums;
+        stack<string> strs;
+        for (auto& ch : s) {
+            // 数字
+            if ('0' <= ch && ch <= '9') {
+                // NOTE: 加一个数字前需要把之前的 num 乘以 10
+                num = num * 10 + ch - '0';
+            }
+            // 字母
+            else if (('a' <= ch && ch <= 'z') || ('A' <= ch && ch <= 'Z')) {
                 res += ch;
             }
-            // 遇到 '[' 则存储 multi 和 res, 再重置
+            // 左括号 [
             else if (ch == '[') {
-                multi_stack_.push(stoi(multi));
-                res_stack_.push(res);
-                multi.clear();
-                res.clear();
+                // 入栈
+                nums.push(num);
+                strs.push(res);
+                // 清空
+                num = 0;
+                res = "";
             }
-            // 遇到 ']' 开始拼接
+            // 右括号 ]
             else {
-                // last_res是上个 [ 到当前 [ 的字符串: "3[a2[c]]" 中的 a
-                // cur_multi是当前 [ 到 ] 内字符串的重复倍数: "3[a2[c]]" 中的 2
-                auto last_res{res_stack_.top()};
-                auto curr_multi{multi_stack_.top()};
-                res_stack_.pop();
-                multi_stack_.pop();
-                // NOTE: res = last_res + cur_multi * res
-                while (curr_multi--) {
-                    last_res += res;
+                // 结算
+                int repeat = nums.top();  // 数字倍数
+                nums.pop();
+                while (repeat--) {
+                    // 把内部 [] 即 res 重复加到外部 str 即strs.top() 上
+                    strs.top() += res;
                 }
-                // NOTE: 这里res后面将作为last_res, 所以是正确的
-                // 不要想着去重置
-                res = last_res;
+                // 此时原外部 [] 就是现在的 内部 []
+                res = strs.top();
+                strs.pop();
             }
         }
         return res;
     }
-#else
-
-#endif
 };
 // @leet end
 

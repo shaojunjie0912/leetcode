@@ -36,7 +36,6 @@ using namespace std;
  */
 class Solution {
 public:
-#if 1
     TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
         int n = inorder.size();
         unordered_map<int, int> inorder_map;
@@ -44,42 +43,19 @@ public:
             inorder_map[inorder[i]] = i;  // 记录 inorder 元素和对应索引
         }
         // [pre_l, pre_r] [in_l, in_r]
-        // 理解为 pre 和 in 的左右边界, 而不是左右子树的 pre 和 in
-        function<TreeNode*(int, int, int, int)> dfs = [&](int pre_l, int pre_r, int in_l,
-                                                          int in_r) -> TreeNode* {
+        // 理解为数组 pre 和 in 的左右边界, 而不是左右子树的 pre 和 in
+        function<TreeNode*(int, int, int, int)> build = [&](int pre_l, int pre_r, int in_l,
+                                                            int in_r) -> TreeNode* {
             if (pre_l > pre_r) {
                 return nullptr;
             }
-            // pre_l: 前序遍历结果数组第一个元素
-            int left_size = inorder_map[preorder[pre_l]] - in_l;  // 不要 preorder 第一个即根
-            auto left_node = dfs(pre_l + 1, pre_l + left_size, in_l, in_l + left_size - 1);
-            auto right_node = dfs(pre_l + left_size + 1, pre_r, in_l + left_size + 1, in_r);
+            int left_size = inorder_map[preorder[pre_l]] - in_l;  // NOTE: 要减去 in_l
+            auto left_node = build(pre_l + 1, pre_l + left_size, in_l, in_l + left_size - 1);
+            auto right_node = build(pre_l + left_size + 1, pre_r, in_l + left_size + 1, in_r);
             return new TreeNode{preorder[pre_l], left_node, right_node};
         };
-        return dfs(0, n - 1, 0, n - 1);
+        return build(0, n - 1, 0, n - 1);
     }
-#else
-    TreeNode* buildTree(vector<int>& preorder, vector<int>& inorder) {
-        if (preorder.empty()) {  // NOTE: 边界条件: 空节点
-            return nullptr;
-        }
-        // 左子树大小
-        auto left_size{ranges::find(inorder, preorder[0]) - inorder.begin()};
-
-        // 左右子树前序遍历结果数组
-        vector<int> left_preorder{preorder.begin() + 1, preorder.begin() + 1 + left_size};
-        vector<int> right_preorder{preorder.begin() + 1 + left_size, preorder.end()};
-
-        // 左右子树中序遍历结果数组
-        vector<int> left_inorder{inorder.begin(), inorder.begin() + left_size};
-        vector<int> right_inorder{inorder.begin() + left_size + 1, inorder.end()};
-
-        auto left{buildTree(left_preorder, left_inorder)};     // 递归左子树
-        auto right{buildTree(right_preorder, right_inorder)};  // 递归右子树
-
-        return new TreeNode{preorder[0], left, right};
-    }
-#endif
 };
 // @leet end
 

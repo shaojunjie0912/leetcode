@@ -19,22 +19,19 @@
 
 using namespace std;
 
-// 前缀和
-// 维护当前前缀和最小值, 因为 max(子数组和) = cur(前缀和) - min(前缀和)
+// 最大 (子数组和) -> 最大 (前缀和之差) -> 「买卖股票最佳时机」
 
 // @leet start
 class Solution {
 public:
     int maxSubArray(vector<int>& nums) {
         int ans{INT_MIN};
-        int min_pre_sum{0};
+        int min_left{0};  // NOTE: 0: 因为下面循环从第一个开始遍历, 此时 min_left = s[0] = 0
         int pre_sum{0};
-        for (auto x : nums) {  // 直接范围 for
+        for (auto& x : nums) {
             pre_sum += x;
-            // NOTE: 先计算 cur(前缀和) - min(前缀和)
-            ans = std::max(ans, pre_sum - min_pre_sum);
-            // 再更新 min (前缀和)
-            min_pre_sum = std::min(min_pre_sum, pre_sum);
+            ans = std::max(ans, pre_sum - min_left);
+            min_left = std::min(min_left, pre_sum);
         }
         return ans;
     }

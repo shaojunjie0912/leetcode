@@ -23,13 +23,13 @@ using namespace std;
 class Solution {
 public:
     vector<vector<int>> merge(vector<vector<int>>& intervals) {
-        // 按左端点排序
+        // NOTE: 按左端点排序!!!
         ranges::sort(intervals);
         // NOTE: ans 的最后一个区间表示当前正在合并的区间
         vector<vector<int>> ans;
 
         // 比较 interval 的左端点与当前正在合并的区间右端点
-        // 判断 interval 是否可以合并
+        // NOTE: 判断 interval 是否可以合并
         for (auto& interval : intervals) {
             // 不可以合并
             if (ans.empty() || interval[0] > ans.back()[1]) {

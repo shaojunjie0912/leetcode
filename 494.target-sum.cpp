@@ -8,8 +8,9 @@ using namespace std;
 
 // 0-1 背包, 选/不选
 
-// 设正号的元素和为 p
-// 则负号的元素和为 q
+// 设总元素和为 s
+// 正号的元素和为 p
+// 负号的元素和为 q
 // p + q = s
 // p - q = target
 // p = (s + target) / 2
@@ -36,11 +37,10 @@ public:
 
         // 计算背包容量
         int s = reduce(nums.begin(), nums.end()) - abs(target);
-        if (s < 0 || s % 2 == 1) {
+        if (s < 0 || s % 2 == 1) {  // capacity 要求 s 为偶数
             return 0;
         }
         int capacity = s / 2;  // 背包容量
-
         switch (method) {
             case DFS_MEMO:
                 return SolveDfsMemo(nums, capacity);

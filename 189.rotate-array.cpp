@@ -20,24 +20,25 @@
 
 using namespace std;
 
-// 首先: 所有 k >= n 的情况都可以转为 0 <= k < n 的情况
-// 原: A + B
-// 想要: B + A
-
-// 操作:
-// 1. 全部反转: rev(B) + rev(A)
-// 2. 反转 B: rev(rev(B)) = B
-// 3. 反转 A: rev(rev(A)) = A
-// -> B + A
+// NOTE: (k 取余)
+// 1. 反转整个数组
+// 2. 反转前 k 个
+// 3. 反转后 n - k 个
 
 // @leet start
 class Solution {
 public:
     void rotate(vector<int>& nums, int k) {
-        k = k % nums.size();
-        ranges::reverse(nums);
-        ranges::reverse(nums.begin(), nums.begin() + k);
-        ranges::reverse(nums.begin() + k, nums.end());
+        auto reverse = [&](vector<int>& nums, int l, int r) -> void {
+            while (l < r) {
+                std::swap(nums[l++], nums[r--]);
+            }
+        };
+        int n = nums.size();
+        k %= n;                   // NOTE: k 取余循环!!
+        reverse(nums, 0, n - 1);  // 反转整个数组
+        reverse(nums, 0, k - 1);  // 反转前 k 个
+        reverse(nums, k, n - 1);  // 反转后 n - k 个
     }
 };
 // @leet end

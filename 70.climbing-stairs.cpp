@@ -20,10 +20,10 @@ using namespace std;
 // @leet start
 class Solution {
     enum Method {
-        DFS,       // 普通递归 (超时)
-        DFS_MEMO,  // 递归 + 记忆化搜索
-        DP_F,      // 递推 (普通 f 数组)
-        DP_NEW_F,  // 递推 (只用三个状态)
+        DFS,       // 普通递归 (超时) (时间: O(2^n), 空间O(n))
+        DFS_MEMO,  // 递归 + 记忆化搜索 (时间: O(n), 空间O(n))
+        DP_F,      // 递推 (普通 f 数组) (时间: O(n), 空间O(n))
+        DP_NEW_F,  // 递推 (只用三个状态) (时间: O(n), 空间O(1))
     };
 
 public:
@@ -73,29 +73,27 @@ public:
     // 递归 + 记忆化搜索
     int SolveDfsMemo(int n) {
         vector<int> memo(n + 1, -1);  // HACK: 记忆数组: 0 ~ n 一共 n + 1 个
-        auto dfs = [&](auto&& self, int i) {
+        function<int(int)> dfs = [&](int i) -> int {
             if (i == 0 || i == 1) {  // NOTE: 递归边界!! 0 ~ 0 的方法也是 1 种
                 return 1;
             }
-            auto& res{memo[i]};
-            if (res != -1) {  // 如果存在 dfs(i) 的记忆, 则直接返回结果
-                return res;
+            if (memo[i] != -1) {  // 存在记忆则直接返回
+                return memo[i];
             }
-            res = self(self, i - 1) + self(self, i - 2);  // 不存在记忆则保存
-            return res;
+            return memo[i] = dfs(i - 1) + dfs(i - 2);  // 存储记忆
         };
-        return dfs(dfs, n);
+        return dfs(n);
     }
 
     // 递归 (超时)
     int SolveDfs(int n) {
-        auto dfs = [&](auto&& self, int i) {
+        function<int(int)> dfs = [&](int i) -> int {
             if (i == 0 || i == 1) {  // NOTE: 递归边界!! 0 ~ 0 的方法也是 1 种
                 return 1;
             }
-            return self(self, i - 1) + self(self, i - 2);
+            return dfs(i - 1) + dfs(i - 2);
         };
-        return dfs(dfs, n);
+        return dfs(n);
     }
 };
 // @leet end

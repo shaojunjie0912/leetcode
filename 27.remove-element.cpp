@@ -5,22 +5,20 @@
 
 using namespace std;
 
+// room 空位
+// 本题没有移动元素要求, 因此不需要 swap, 直接用赋值
+
 // @leet start
 class Solution {
 public:
-    // 双指针法
     int removeElement(vector<int>& nums, int val) {
-        int slow{0}, fast{0};
-        int n = nums.size();
-        while (fast < n) {
-            // 如果 fast 指向的元素不是 val
-            // 则将其放到 slow 指向的位置
-            if (nums[fast] != val) {
-                nums[slow++] = nums[fast];
+        int room{0};
+        for (auto& x : nums) {
+            if (x != val) {
+                nums[room++] = x;
             }
-            ++fast;
         }
-        return slow;  // slow 即为新数组的长度
+        return room;
     }
 };
 // @leet end

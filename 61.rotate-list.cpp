@@ -37,47 +37,31 @@ using namespace std;
 class Solution {
 public:
     ListNode* rotateRight(ListNode* head, int k) {
-        // NOTE: 链表判空, k 判 0
-        if (!head || k == 0) {
+        // NOTE: 空/单节点直接返回
+        if (!head || !head->next) {
             return head;
         }
-
-        // 获取链表长度
-        int len{0};
+        // 计算总个数
+        int n{0};
+        for (auto curr{head}; curr; curr = curr->next) {
+            ++n;
+        }
+        k %= n;
+        // NOTE: 能被整除直接返回
+        if (!k) {
+            return head;
+        };
         auto curr{head};
-        while (curr) {
+        for (int i = 0; i < n - k - 1; ++i) {
             curr = curr->next;
-            ++len;
         }
-
-        // NOTE: 取余!! 取余后还要判 0
-        if (k = k % len; k == 0) {
-            return head;
-        }
-
-        // dummy -> ... -> 倒数第 k+1 个 -> new_head -> ... -> nullptr
-        //                     l                                 r
-
-        // 找到倒数第 k + 1 个节点, 指向 nullptr
-        ListNode dummy{0, head};
-        auto l{&dummy}, r{l};
-        for (int i{0}; i < k + 1; ++i) {
-            r = r->next;
-        }
-        while (r) {
-            l = l->next;
-            r = r->next;
-        }
-        // 此时 left 是倒数第 k + 1 个节点
-        auto new_head{l->next};
-        l->next = nullptr;
-
-        // 修改最后一个节点指向
+        auto new_head{curr->next};
+        curr->next = nullptr;
         curr = new_head;
-        for (int i{0}; i < k - 1; ++i) {
+        for (int i = 0; i < k - 1; ++i) {
             curr = curr->next;
         }
-        curr->next = dummy.next;
+        curr->next = head;
         return new_head;
     }
 };

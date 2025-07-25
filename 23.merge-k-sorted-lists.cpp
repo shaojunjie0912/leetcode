@@ -38,7 +38,7 @@ using namespace std;
  */
 class Solution {
 public:
-#if 0
+#if 1
     // 方法一: 最小堆
     ListNode* mergeKLists(vector<ListNode*>& lists) {
         // NOTE: cmp 为 true 时会将 n2 排在前面

@@ -22,7 +22,7 @@
 
 using namespace std;
 
-// 双向链表节点 DNode (包含 key 和 value)
+// 双向链表节点 DNode (包含 key, value,  *prev, *next)
 // dummy 哨兵节点, 初始化时 prev 和 next 均指向自身
 // 哈希表保存 key 和 DNode 映射, 方便快速查询是否存在
 // 辅助函数:

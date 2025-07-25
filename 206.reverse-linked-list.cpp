@@ -27,7 +27,7 @@ public:
             auto next{curr->next};  // 暂存 next
             curr->next = prev;
             prev = curr;
-            curr = next;
+            curr = next; // !!暂存的 next!!
         }
         return prev;  // NOTE: 返回的是 prev, 此时 curr = nullptr
     }

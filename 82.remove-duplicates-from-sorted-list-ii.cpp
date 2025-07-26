@@ -38,20 +38,18 @@ class Solution {
 public:
     ListNode* deleteDuplicates(ListNode* head) {
         ListNode dummy{0, head};
-        auto curr{&dummy};
-        // NOTE: 循环条件 curr->next 和 curr->next->next 均非空
-        // 保证两个节点
-        // dummy  head
-        // curr   n1   n2  n3...
-        while (curr->next && curr->next->next) {
-            auto target_val{curr->next->next->val};
-            if (curr->next->val == target_val) {
-                // 删除所有值相同节点
-                while (curr->next && curr->next->val == target_val) {
-                    curr->next = curr->next->next;  // 修改 curr->next 指向下下一个
+        auto curr{&dummy};                        // 这里 curr 其实是节点组(1, 2)前一个节点
+        while (curr->next && curr->next->next) {  // 判断节点组(直到不满足俩个)
+            auto val = curr->next->val;
+            // 如果有重复的节点组
+            if (val == curr->next->next->val) {
+                // 值等于 val 的全部删除
+                // 保证节点组节点存在
+                while (curr->next && curr->next->val == val) {
+                    curr->next = curr->next->next;
                 }
             } else {
-                curr = curr->next;  // 更新 curr 到 curr->next
+                curr = curr->next;
             }
         }
         return dummy.next;

@@ -21,51 +21,60 @@ using namespace std;
 
 // 「涵盖」: s 的子串中每个字母出现的次数都 >= t 中每个字母出现的次数
 
-// NOTE: 特意封装了一个判断是否涵盖的函数 IsCovered, 也是很耗时的(因为逐个比较)
-
 // @leet start
 class Solution {
 public:
-    string minWindow(string s, string t) {
-        int n = s.length();
-        int ans_left = -1, ans_right = n;  // ans (用出界值初始化)
-        int cnt_s[128]{};                  // s 的子串中每个字母出现的次数
-        int cnt_t[128]{};                  // t 中每个字母出现的次数
-        // 记录 t 中每个字母出现次数
-        for (auto c : t) {
-            ++cnt_t[c];
+    std::string minWindow(std::string s, std::string t) {
+        if (s.length() < t.length() || t.empty()) {
+            return "";
         }
-        for (int left = 0, right = 0; right < n; ++right) {
-            // 右端点移入
-            ++cnt_s[s[right]];
-            // while 涵盖, 就尝试左端点移出, 缩小窗口
-            while (IsCovered(cnt_s, cnt_t)) {
-                // 更新答案 (更短的子串)
-                if (right - left < ans_right - ans_left) {
-                    ans_left = left;
-                    ans_right = right;
-                }
-                // 左端点移出
-                --cnt_s[s[left]];
-                ++left;
-            }
-        }
-        return ans_left < 0 ? "" : s.substr(ans_left, ans_right - ans_left + 1);
-    }
 
-private:
-    bool IsCovered(int* cnt_s, int* cnt_t) {
-        for (int i = 'A'; i <= 'Z'; ++i) {  // 有趣: int = char ''
-            if (cnt_s[i] < cnt_t[i]) {
-                return false;
+        // 使用 vector 作为频率表，更符合 C++ 风格
+        std::vector<int> needs(128, 0);
+        for (char c : t) {
+            ++needs[c];
+        }
+
+        // count: 还需要匹配的字符总数
+        // l: 窗口左边界
+        // min_len: 最小窗口长度
+        // start_index: 最小窗口的起始索引
+        int count = t.length();  // count==0相当于 IsCovered 判断
+        int n = s.length();
+        int min_len{n + 1}, start_index{0};
+
+        int l = 0;
+        for (int r = 0; r < n; ++r) {
+            // 扩展窗口
+            // 如果 s[r] 是 t 中的字符，则所需字符数 count 减 1
+            if (needs[s[r]] > 0) {
+                --count;
+            }
+            // 将 s[r] 对应的需求量减 1
+            // 对于不在 t 中的字符，其 needs 值会变为负数
+            --needs[s[r]];
+
+            // 当 count 为 0 时，表示当前窗口 [l, r] 已经覆盖了 t
+            while (count == 0) {
+                // 更新最小窗口信息
+                if (r - l + 1 < min_len) {
+                    min_len = r - l + 1;
+                    start_index = l;
+                }
+
+                // 收缩窗口，尝试将左边界 l 右移
+                // 将 s[l] 归还，需求量加 1
+                ++needs[s[l]];
+                // 如果归还后，s[l] 的需求量大于 0，
+                // 说明它是一个必需字符，我们又开始欠这个字符了
+                if (needs[s[l]] > 0) {
+                    ++count;
+                }
+                ++l;  // 移动左边界
             }
         }
-        for (int i = 'a'; i <= 'z'; ++i) {  // 有趣: int = char ''
-            if (cnt_s[i] < cnt_t[i]) {
-                return false;
-            }
-        }
-        return true;
+
+        return min_len <= n ? s.substr(start_index, min_len) : "";
     }
 };
 // @leet end

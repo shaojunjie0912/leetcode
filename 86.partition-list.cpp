@@ -37,8 +37,8 @@ public:
             curr = curr->next;
         }
 
-        small->next = large_dummy.next;
-        large->next = nullptr;
+        small->next = large_dummy.next; 
+        large->next = nullptr; // large->next 指向空
 
         return small_dummy.next;
     }

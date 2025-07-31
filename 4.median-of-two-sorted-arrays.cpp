@@ -26,15 +26,8 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-    int maxProfit(vector<int>& prices) {
-        int ans{0};
-        // 初始化为首元素因为不可能在当天卖出
-        int left_min{prices[0]};  // 左边最小价格 (不包含当前) 
-        for (auto& x : prices) {
-            ans = max(ans, x - left_min);
-            left_min = min(left_min, x);
-        }
-        return ans;
+    double findMedianSortedArrays(vector<int>& nums1, vector<int>& nums2) {
+        
     }
 };
 // @leet end

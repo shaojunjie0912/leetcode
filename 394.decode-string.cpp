@@ -13,7 +13,7 @@ class Solution {
 public:
     string decodeString(string s) {
         string res{};
-        int num;
+        int num{0};
         stack<int> nums;
         stack<string> strs;
         for (auto& ch : s) {

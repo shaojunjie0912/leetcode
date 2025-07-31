@@ -44,17 +44,16 @@ using namespace std;
 class Solution {
 public:
     TreeNode* sortedArrayToBST(vector<int>& nums) {
-        function<TreeNode*(vector<int>&, int, int)> dfs = [&](vector<int>& nums, int l,
-                                                              int r) -> TreeNode* {
+        function<TreeNode*(int, int)> dfs = [&](int l, int r) -> TreeNode* {
             // NOTE: 边界条件!!! 因为我取的是 []
             if (l > r) {
                 return nullptr;
             }
             int m = l + (r - l) / 2;
             // NOTE: 妙啊, new 一个节点
-            return new TreeNode{nums[m], dfs(nums, l, m - 1), dfs(nums, m + 1, r)};
+            return new TreeNode{nums[m], dfs(l, m - 1), dfs(m + 1, r)};
         };
-        return dfs(nums, 0, nums.size() - 1);
+        return dfs(0, nums.size() - 1);
     }
 };
 // @leet end

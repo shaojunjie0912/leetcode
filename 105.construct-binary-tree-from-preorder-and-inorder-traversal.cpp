@@ -42,17 +42,17 @@ public:
         for (int i = 0; i < n; ++i) {
             inorder_map[inorder[i]] = i;  // 记录 inorder 元素和对应索引
         }
-        // [pre_l, pre_r] [in_l, in_r]
+        // [pre_b, pre_e] [in_l, in_r]
         // 理解为数组 pre 和 in 的左右边界, 而不是左右子树的 pre 和 in
-        function<TreeNode*(int, int, int, int)> build = [&](int pre_l, int pre_r, int in_l,
+        function<TreeNode*(int, int, int, int)> build = [&](int pre_b, int pre_e, int in_l,
                                                             int in_r) -> TreeNode* {
-            if (pre_l > pre_r) {
+            if (pre_b > pre_e) {
                 return nullptr;
             }
-            int left_size = inorder_map[preorder[pre_l]] - in_l;  // NOTE: 要减去 in_l
-            auto left_node = build(pre_l + 1, pre_l + left_size, in_l, in_l + left_size - 1);
-            auto right_node = build(pre_l + left_size + 1, pre_r, in_l + left_size + 1, in_r);
-            return new TreeNode{preorder[pre_l], left_node, right_node};
+            int left_size = inorder_map[preorder[pre_b]] - in_l;  // NOTE: 要减去 in_l
+            auto left_node = build(pre_b + 1, pre_b + left_size, in_l, in_l + left_size - 1);
+            auto right_node = build(pre_b + left_size + 1, pre_e, in_l + left_size + 1, in_r);
+            return new TreeNode{preorder[pre_b], left_node, right_node};
         };
         return build(0, n - 1, 0, n - 1);
     }

@@ -9,7 +9,8 @@ using namespace std;
 // 闭区间 [0, n-2] 二分, 跟最右侧一个元素 nums[n-1] 比较大小判断递增段
 
 // NOTE: 1. 判断递增段 2. 判断红蓝的条件必须是完整的逻辑二分!!
-// NOTE: [第一段, 第二段] 通过 > end 以及 <= end 判断!!! 不能是 < > 组合, 不完整!!!
+// NOTE: nums[m] 一定用 < target 或 >= target 判断!
+// NOTE: [第一段, 第二段] 一定是 > end 以及 <= end !
 
 // 红色: nums[mid] 在 target 左侧
 // 蓝色: nums[mid] 就是 target 或在 target 右侧

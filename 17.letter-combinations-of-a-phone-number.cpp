@@ -15,7 +15,7 @@ using namespace std;
 class Solution {
 public:
     // 数字 -> 字符数组映射
-    string const mapping[10]{"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
+    vector<string> mapping = {"", "", "abc", "def", "ghi", "jkl", "mno", "pqrs", "tuv", "wxyz"};
 
     vector<string> letterCombinations(string digits) {
         if (digits.empty()) {  // 判空
@@ -34,8 +34,10 @@ public:
             }
             // 非边界条件, 理解这个 for 循环,
             for (char c : mapping[digits[i] - '0']) {
-                path[i] = c;  // 枚举第 i 个字母 (直接覆盖就不需要恢复现场了)
-                dfs(i + 1);   // 构造 >= i+1 的部分
+                // 枚举第 i 个字母 (直接覆盖就不需要恢复现场了)
+                path[i] = c;  // 思考: 第 i 个字母选 a/b/c...?
+                // 构造 >= i+1 的部分
+                dfs(i + 1);  // 思考: 递归到 i+1, 也就是下一个字母, 在下一个 mapping[i+1] 中
             }
         };
         dfs(0);  // 递归入口

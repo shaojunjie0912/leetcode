@@ -25,6 +25,9 @@ using namespace std;
 // 避免负数做一下偏移得到: [0, 2n - 2]
 // 一共 2n - 1 个数
 
+// 遍历 c 从 0 ~ n - 1
+// 标记 -> 放皇后 -> 递归 i + 1 -> 取消标记
+
 // @leet start
 class Solution {
 public:
@@ -34,11 +37,11 @@ public:
         vector<int> col(n);            // 皇后位置 (r, col[r]) (path)
         vector<int> on_col(n);         // 标记列索引是否出现过 (on_path)
         vector<int> diag1(2 * n - 1);  // 标记主对角线之和是否出现过
-        vector<int> diag2(2 * n - 1);  // 标记副对角线之差是否出现过
+        vector<int> diag2(2 * n - 1);  // 标记副对角线之差(偏移)是否出现过
 
         // r: 行索引
-        function<void(int)> dfs = [&](int r) -> void {
-            if (r == n) {  // 抵达边界, 保存答案
+        function<void(int)> dfs = [&](int i) -> void {
+            if (i == n) {  // 抵达边界, 保存答案
                 // 生成包含字符串 '..Q..' 的棋盘
                 vector<string> board(n);
                 // 遍历每行
@@ -52,15 +55,15 @@ public:
             // (r, c[0, ..., n-1]) 遍历 c 从 0 到 n - 1
             // c: 列索引
             for (int c = 0; c < n; ++c) {
-                int sum_rc = r + c;           // rc 和
-                int diff_rc = r - c + n - 1;  // rc 差
+                int sum_rc = i + c;           // rc 和
+                int diff_rc = i - c + n - 1;  // rc 差
 
                 // 限制 1: 不在同一列;
                 // 限制 2: 不在同一斜线(主/副对角线)
                 if (!on_col[c] && !diag1[sum_rc] && !diag2[diff_rc]) {
                     on_col[c] = diag1[sum_rc] = diag2[diff_rc] = 1;  // 标记为已访问
-                    col[r] = c;                                      // NOTE: 皇后位置: r 行 c 列
-                    dfs(r + 1);                                      // 继续递归
+                    col[i] = c;                                      // NOTE: 皇后位置: r 行 c 列
+                    dfs(i + 1);                                      // 继续递归
                     on_col[c] = diag1[sum_rc] = diag2[diff_rc] = 0;  // 恢复现场
                 }
             }

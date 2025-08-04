@@ -44,7 +44,8 @@ public:
 
             // 不选 i 后面的逗号 (i = n - 1 时必须选, 这样才能和后面分割)
             if (i < n - 1) {
-                dfs(i + 1, start);
+                // 考虑 i + 1 后面的逗号怎么选
+                dfs(start, i + 1);
             }
 
             // 选 (既然选了, 就开始分割并判断)
@@ -55,7 +56,6 @@ public:
                 path.pop_back();    // 恢复现场
             }
         };
-
         dfs(0, 0);
         return ans;
     }

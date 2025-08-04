@@ -73,8 +73,10 @@ public:
             // 用 j 遍历 [i, n-1]
             for (int j = i; j < n; ++j) {
                 path.push_back(candidates[j]);  //
-                dfs(j, t - candidates[j]);      // NOTE: 这里是 j !!!
-                path.pop_back();                // 恢复现场
+                // 是 j 不是 i
+                // 是 j 不是 j + 1 可以重复选
+                dfs(j, t - candidates[j]);
+                path.pop_back();  // 恢复现场
             }
         };
 

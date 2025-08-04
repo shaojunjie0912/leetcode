@@ -15,9 +15,8 @@ class Solution {
     // 拆离判断回文字符串的函数 左->中<-右
     // left: 子串左端点
     // right: 子串右端点
-    bool IsPalindrome(string const& s, int left, int right) {
-        // < 即可, 不需要 =, 中间那一个字符不需要判断
-        while (left < right) {
+    bool IsPalindrome(string_view s, int left, int right) {
+        while (left <= right) {
             if (s[left++] != s[right--]) {
                 return false;
             }
@@ -26,30 +25,32 @@ class Solution {
     }
 
 public:
-#if 0
-    // 输入角度:
+#if 1
+    // 输入角度: 选/不选 i 后面的逗号
     vector<vector<string>> partition(string s) {
         int n = s.length();
         vector<vector<string>> ans;
         vector<string> path;
 
         // dfs 输入参数:
-        // i: i 后面的逗号选/不选
-        // start: 回文子串开始位置 s[start...i]
-        function<void(int, int)> dfs = [&](int i, int start) -> void {
+        // start: 子串开始位置
+        // i: i 后面的逗号选/不选 (0, 1, 2, ..., n - 1) 第 n - 1 个逗号必须选
+        // i 也是子串结束位置
+        function<void(int, int)> dfs = [&](int start, int i) -> void {
             if (i == n) {  //
                 ans.push_back(path);
                 return;
             }
 
-            // 不选 i 后面的逗号 (i=n-1 时必须选, 这样才能和后面分割)
+            // 不选 i 后面的逗号 (i = n - 1 时必须选, 这样才能和后面分割)
             if (i < n - 1) {
                 dfs(i + 1, start);
             }
 
-            // 选
+            // 选 (既然选了, 就开始分割并判断)
             if (IsPalindrome(s, start, i)) {
-                path.push_back(s.substr(start, i - start + 1));
+                path.push_back(s.substr(start, i - start + 1));  // 加入 path
+                // 递归 dfs, 枚举下一个子串
                 dfs(i + 1, i + 1);  // start = i + 1 子串从 i + 1 开始
                 path.pop_back();    // 恢复现场
             }

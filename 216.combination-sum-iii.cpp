@@ -27,13 +27,14 @@ public:
             // 1. 设还需要选和为 t 的数, 选一个数就减去, 当 t < 0 时, 丢弃
             // 2. 剩余 d 个数字即使全部选择最大, 和也小于 t, 丢弃
             //    例如剩下 d 个数字, t > i + (i - 1) + ... + (i - d + 1), 等差数列求和
-            int d = k - path.size();
-            if (t < 0 || t > (i + i - d + 1) * d / 2 || i < d) {
+            int d = k - path.size();  // d: 还要选 d 个数
+            if (i < d || t < 0 || t > (i + i - d + 1) * d / 2) {
                 return;
             }
 
             if (d == 0) {
                 ans.push_back(path);
+                return;
             }
 
             // 使用 j 遍历倒序枚举 [1, i]

@@ -17,10 +17,6 @@
 #include <utility>
 #include <vector>
 
-#include "include/list_node.hpp"
-#include "include/node.hpp"
-#include "include/tree_node.hpp"
-
 using namespace std;
 
 // 26 叉树, 记录路径
@@ -28,13 +24,13 @@ using namespace std;
 // @leet start
 
 // 26 叉数的节点
-struct LetterNode {
-    LetterNode* son[26]{};  // 26 个子节点 (代表 26 字母)
-    bool end{false};        // 是否为终止节点
+struct Node {
+    Node* son[26]{};  // 26 个子节点 (代表 26 字母)
+    bool end{false};  // 是否为终止节点
 };
 
 class Trie {
-    LetterNode* root{new LetterNode};
+    Node* root{new Node};
 
     int Find(string word) {
         auto curr{root};
@@ -58,7 +54,7 @@ public:
         for (auto ch : word) {
             ch -= 'a';  // 缩到 26 范围
             if (!curr->son[ch]) {
-                curr->son[ch] = new LetterNode;
+                curr->son[ch] = new Node;
             }
             curr = curr->son[ch];
         }

@@ -28,20 +28,22 @@ class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
         int n = temperatures.size();
-        stack<int> st;  // 单调栈, 存放索引
+        // 从右到左遍历
         vector<int> ans(n);
-
-        // 从右到左
+        stack<int> st;
         for (int i = n - 1; i >= 0; --i) {
-            int t = temperatures[i];
-            // 只要栈不为空且当前 t >= 栈顶, 就弹出栈
+            int t = temperatures[i];  // 获取当前温度
+            // 如果当前温度>=栈顶元素, 就一直弹出
             while (!st.empty() && t >= temperatures[st.top()]) {
                 st.pop();
             }
+            // 这里当前温度 < 栈顶元素, 可以记录答案了
+            // 注意: 栈不为空
             if (!st.empty()) {
                 ans[i] = st.top() - i;
             }
-            st.push(i);  // 入栈
+            // 记录索引到栈中
+            st.push(i);
         }
 
         return ans;

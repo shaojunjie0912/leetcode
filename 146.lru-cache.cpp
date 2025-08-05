@@ -61,18 +61,20 @@ public:
             node->value = value;
             return;
         }
-        // 如果没有就创建并添加到哈希表
-        node = new DNode{key, value};
-        key2node[key] = node;
-        PushFront(node);  // 放在最上面
 
-        // 如果超出容量则去除最后一本书 (dummy -> prev)
-        if (key2node.size() > capacity) {
+        // 准备放新书, 在此之前先检查容量
+        // 如果当前容量已经最大则去除最后一本书 (dummy -> prev)
+        if (key2node.size() == capacity) {
             auto back_node{dummy->prev};
             key2node.erase(back_node->key);
             Remove(back_node);  // 抽出最后一本
             delete back_node;   // 释放内存
         }
+
+        // 如果没有就创建并添加到哈希表
+        node = new DNode{key, value};
+        key2node[key] = node;
+        PushFront(node);  // 放在最上面
     }
 
 private:

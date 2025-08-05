@@ -28,7 +28,7 @@ using namespace std;
 // @leet start
 class Solution {
     // 上下左右
-    const int DIRECTIONS[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
+    const int DIR[4][2] = {{-1, 0}, {1, 0}, {0, -1}, {0, 1}};
 
 public:
     int orangesRotting(vector<vector<int>>& grid) {
@@ -61,7 +61,7 @@ public:
                 auto [rotten_x, rotten_y]{q.front()};
                 q.pop();
                 // 四个方向腐烂, 更新新一轮腐烂橘子
-                for (auto const& [dir_x, dir_y] : DIRECTIONS) {
+                for (auto const& [dir_x, dir_y] : DIR) {
                     auto i = rotten_x + dir_x;
                     auto j = rotten_y + dir_y;
                     // NOTE:

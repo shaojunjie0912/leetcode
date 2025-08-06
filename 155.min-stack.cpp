@@ -7,12 +7,10 @@
 
 using namespace std;
 
-// 维护前缀最小值
-
 // @leet start
 class MinStack {
 private:
-    stack<pair<int, int>> st;  // NOTE: 底层栈存放 pair <值, 最小值>
+    stack<pair<int, int>> st;  // NOTE: 底层栈存放 pair<值, 最小值>
 
 public:
     MinStack() {

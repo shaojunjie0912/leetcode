@@ -21,31 +21,33 @@
 
 using namespace std;
 
-// 单调栈: 栈中存放索引
+// 栈顶: 低温度
+// 栈底: 高温度
+// 维护一个递减的单调栈 (栈中存放索引!)
+// 当处理第 i 天的温度时, 需要回顾之前哪些天正在「等待」一个更高的温度
+
+// 遍历到新的一天 i 时, 如果 temperatures[i] 比栈顶索引对应的温度高,
+// 则说明我们为栈顶的那一天找到了答案!!
+
+// NOTE: 虽然 i 顺序遍历, 但是 prev_idx 更新答案是乱序的
 
 // @leet start
 class Solution {
 public:
     vector<int> dailyTemperatures(vector<int>& temperatures) {
         int n = temperatures.size();
-        // 从右到左遍历
         vector<int> ans(n);
         stack<int> st;
-        for (int i = n - 1; i >= 0; --i) {
-            int t = temperatures[i];  // 获取当前温度
-            // 如果当前温度>=栈顶元素, 就一直弹出
-            while (!st.empty() && t >= temperatures[st.top()]) {
+        for (int i = 0; i < n; ++i) {
+            // NOTE: 这里比较值不是索引!!
+            while (!st.empty() && temperatures[i] > temperatures[st.top()]) {
+                auto prev_idx{st.top()};
+                // 为栈顶的那一天(之前的某一天)找到了答案
+                ans[prev_idx] = i - prev_idx;
                 st.pop();
             }
-            // 这里当前温度 < 栈顶元素, 可以记录答案了
-            // 注意: 栈不为空
-            if (!st.empty()) {
-                ans[i] = st.top() - i;
-            }
-            // 记录索引到栈中
             st.push(i);
         }
-
         return ans;
     }
 };

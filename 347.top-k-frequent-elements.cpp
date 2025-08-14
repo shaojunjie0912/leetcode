@@ -40,6 +40,7 @@ public:
 
         vector<int> ans;
         // NOTE: 倒序遍历 + 退出条件很妙! ans.size()
+        // 因为题目数据保证前k个高频元素集合唯一所以可以用ans.size()判断
         for (int i = max_cnt; i >= 0 && ans.size() < k; --i) {
             ans.insert(ans.end(), buckets[i].begin(), buckets[i].end());
         }

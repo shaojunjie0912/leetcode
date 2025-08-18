@@ -24,17 +24,17 @@
 using namespace std;
 
 // 算法:
-// * 从后向前扫描数组，找到第一个满足 nums[i] < nums[i+1] 的索引 i。
-// 这个 nums[i] 就是我们要操作的“较小数”。
-// 如果找不到这样的 i（即整个数组是降序的，如 [3, 2, 1]），说明这已经是最大的排列。
+// * 从后(n-2)向前找第一个升序对(nums[i], nums[i+1])的较小数即 nums[i] < nums[i+1] 的索引 i
+// 这个 nums[i] 就是我们要操作的“较小数”
+// 如果找不到这样的 i, 即整个数组是降序的, 如 [3, 2, 1]，说明这已经是最大的排列。
 // 根据题意，下一个排列是最小的排列，所以直接将整个数组反转，然后结束。
 
 // * 如果找到了 i，再从后向前扫描，找到第一个满足 nums[j] > nums[i] 的索引 j。
 // 这个 nums[j] 就是我们要找的“较大数”。
 
-// * 交换 nums[i] 和 nums[j]。
+// * 交换: 较小数 nums[i] 和较大数 nums[j]
 
-// * 反转 从索引 i+1 到数组末尾的部分。
+// * 反转: 从索引 i+1 到数组末尾的部分 NOTE: 反转是为了让后面变最小
 
 // @leet start
 class Solution {
@@ -46,17 +46,18 @@ public:
         while (i >= 0 && nums[i] >= nums[i + 1]) {
             --i;
         }
-        // 如果 i>=0
-        if (i >= 0) {
-            // 从后向前找第一个 nums[j] > nums[i], 这个nums[j]就是较大数
-            int j = n - 1;  // 从 n - 1 开始
-            while (j > i && nums[j] <= nums[i]) {
-                --j;
-            }
-            // 交换
-            std::swap(nums[i], nums[j]);
+        if (i < 0) {  // 没有较小数, 完全逆序, 下一个排列重新开始
+            ranges::reverse(nums);
+            return;  // 直接返回
         }
-        // 如果 i<0 或步骤四: 反转 i 之后的部分
+        // 从后向前找第一个 nums[j] > nums[i], 这个nums[j]就是较大数
+        int j = n - 1;  // 从 n - 1 开始
+        while (j > i && nums[j] <= nums[i]) {
+            --j;
+        }
+        // 交换
+        std::swap(nums[i], nums[j]);
+        // 如果 i<0 或步骤四: 反转 i 之后的部分(>=i+1)
         ranges::reverse(nums.begin() + i + 1, nums.end());
     }
 };

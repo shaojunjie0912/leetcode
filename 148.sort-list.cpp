@@ -6,7 +6,7 @@
 
 using namespace std;
 
-// 分治：
+// 归并排序(时间复杂度: O(nlogn), 空间复杂度: O(logn))
 // 1. 链表中间节点 (快 2 慢 1, 要 prev 来断开跟 slow 的连接)
 // 2. 合并两个有序链表 (dummy)
 // 3. 递归调用 sortList

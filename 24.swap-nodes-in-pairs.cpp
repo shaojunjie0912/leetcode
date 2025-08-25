@@ -42,20 +42,20 @@ class Solution {
 public:
     ListNode* swapPairs(ListNode* head) {
         ListNode dummy{0, head};  // dummy 指向 head
-        auto node0{&dummy};
-        auto node1{head};
-        // NOTE: 交换的是 node1 和 node1->next(即 node2)
+        auto n0{&dummy};
+        auto n1{head};
+        // NOTE: n0 是前一个节点, 交换的是 n1 和 n1->next(即 n2)
         // 条件: 至少有两个节点
-        while (node1 && node1->next) {
-            auto node2{node1->next};
-            auto node3{node2->next};
-            node0->next = node2;  // 0 -> 2
-            node2->next = node1;  // 2 -> 1
-            node1->next = node3;  // 1 -> 3
+        while (n1 && n1->next) {
+            auto n2{n1->next};
+            auto n3{n2->next};
+            n0->next = n2;  // 0 -> 2
+            n2->next = n1;  // 2 -> 1
+            n1->next = n3;  // 1 -> 3
 
             // 更新下一轮交换
-            node0 = node1;
-            node1 = node3;
+            n0 = n1;
+            n1 = n3;
         }
         return dummy.next;
     }

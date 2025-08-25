@@ -55,8 +55,8 @@ public:
 
         // 拆分 next
         auto copy_head{head->next};
-        // curr->copy->n1->c1->n2->c2->nullptr
-        // NOTE: 因为 curr 下一轮循环要移动到 n1, 因此需要确保 curr->next->next
+        // n1 -> c1 -> n2 -> c2 -> ...
+        // NOTE: 走到这里就说明 n1 c1 都存在了, 还要确保 n2 存在, 因为 n1 下一步跳到 n2
         curr = head;
         while (curr->next->next) {
             auto copy{curr->next};

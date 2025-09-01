@@ -5,36 +5,36 @@
 
 using namespace std;
 
+using ll = long long;
+
 // @leet start
 class Solution {
 public:
-    // NOTE: 只关注二控制状态!!! 所以用无符号 uint32_t
-    // 防止 INT_MIN 取反溢出
     vector<int> singleNumber(vector<int>& nums) {
-        // NOTE: 异或和
-        // a, b 出现奇数次, 则所有元素异或和就是 a^b
-        uint32_t eor_ab = std::accumulate(nums.begin(), nums.end(), 0, std::bit_xor<>{});
-        // a != b, 则异或和的结果二进制状态必有一位是 1
-        // NOTE: Brian Kernighan 算法找出最右边的 1
-        // -> 000000..1..000
-        // HACK: INT_MIN 取反溢出
-        // 只需要二进制状态即可, 不关注值
-        uint32_t right_most_one = eor_ab & (-eor_ab);
-        // 按照这一位是否为 1 将所有元素分成两类, 取其中的一类元素异或和
-        // 我取"这一位是 1"的一类
-        uint32_t eor_is_one{0};
-        for (auto& num : nums) {
-            if ((num & right_most_one) != 0)  // HACK: 位运算优先级 < 不相等
-            {
-                eor_is_one ^= num;
+        // 假设为 a 和 b, 则 a^b = xor_sum
+        // long long 防止当 xor_sum = INT_MIN 时后面计算 -xor_sum 溢出
+        ll xor_sum = std::accumulate(nums.begin(), nums.end(), 0, std::bit_xor<>{});
+        // a 和 b 不同 -> xor_sum 至少有一位是 1
+        // 找到 xor_sum 最右边那个 1
+        // diff 是一个只有一位为 1 的数, 就是最右边的 1
+        ll diff = xor_sum & (-xor_sum);
+
+        int a{0};
+        int b{0};
+        // 按照差异位上是 1 还是 0 对 nums 进行分组
+        // 对应组直接异或和, 出现两次的就消掉了, 剩下就是答案
+        for (auto x : nums) {
+            // NOTE: 只能跟 0 对比(00000...)
+            // NOTE: 加括号!!
+            if ((x & diff) == 0) {
+                a ^= x;
+            } else {
+                b ^= x;
             }
         }
-        // eor_is_one 就是 a/b 其中一个
-        return {static_cast<int32_t>(eor_is_one), static_cast<int32_t>(eor_ab ^ eor_is_one)};
+        return {a, b};
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

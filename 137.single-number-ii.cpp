@@ -5,28 +5,24 @@
 
 using namespace std;
 
+// 对于每个比特位 i, 遍历数组中每个数字, 累加第 i 位上的值
+// 出现三次的数在该位上的累加是 3 的倍数
+// total_i % 3 取模就是出现一次的数在该位的值 0/1
+
 // @leet start
 class Solution {
 public:
     int singleNumber(vector<int>& nums) {
-        return Find(nums, 3);
-    }
-    int Find(vector<int>& nums, int m) {
-        // cnts[i]: 所有数在 i 位置上的 1 个数之和
-        int cnts[32]{};
-        for (auto num : nums) {
-            for (int i = 0; i < 32; ++i) {
-                // NOTE: 右移妙用
-                cnts[i] += (num >> i) & 1;  // 统计每一位上是否为 1
-            }
-        }
-        int ans{0};
+        int32_t ans{0};  // 初始化时每一位都是 0
+        // NOTE: 最外层循环是遍历整数32位
         for (int i = 0; i < 32; ++i) {
-            // 如果对应位的 1 总数无法被 m 整除, 则是出现 k 次的
-            // 则该位应该是 1
-            if (cnts[i] % m != 0) {
-                // NOTE: 左移妙用
-                ans |= 1 << i;
+            int total_i = 0;  // 累加第 i 位上的值
+            for (auto x : nums) {
+                total_i += (x >> i) & 1;
+            }
+            // 如果取模不是 0 说明那个数字第 i 位是 1
+            if (total_i % 3 != 0) {
+                ans = ans | (1 << i);
             }
         }
         return ans;
@@ -34,6 +30,4 @@ public:
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

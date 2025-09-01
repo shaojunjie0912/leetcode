@@ -20,11 +20,9 @@ public:
         // return eor_all;
 
         // ============ 2 =============
-        return std::accumulate(nums.begin(), nums.end(), 0, std::bit_xor<>());
+        return std::accumulate(nums.begin(), nums.end(), 0, std::bit_xor<>{});
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

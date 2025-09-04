@@ -24,6 +24,10 @@
 using namespace std;
 
 // 中序遍历
+// 写一个 function dfs, 按引用捕获外部变量
+// 参数是 TreeNode*
+// 返回值是 int, -1 代表没有找到
+// 重点在对于当前访问根节点的处理: --k, 不写一个 dfs 不好搞
 
 // @leet start
 /**

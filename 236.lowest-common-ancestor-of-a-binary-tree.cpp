@@ -5,6 +5,7 @@
 
 using namespace std;
 
+// 不需要写 function, 直接内部写 dfs 逻辑
 // NOTE: 递归, 分情况:
 // 当前节点是空节点 -
 // 当前节点是 p     -> 返回当前节点

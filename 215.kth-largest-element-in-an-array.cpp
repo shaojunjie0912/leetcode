@@ -5,102 +5,68 @@
 
 using namespace std;
 
+// 随机选择算法
+// 第 k 大: 第 n-k 小(基于 0-index)
+// NOTE: 不能用 Partition 会退化到 n^2, 而且每次只能分两路
+// 这道题必须用「三路分区」!!
+// 整个区间: left = 0, right = n-1
+// lt: <小区间>的后一个
+// gt: <大区间>的前一个
+// i: 当前处理的元素
+// [left...lt-1]  < pivot
+// [lt...i-1]     == pivot
+// [i...gt]       未处理
+// [gt+1...right] > pivot
+//
+
 // @leet start
 class Solution {
-    enum Method {
-        QuickSelectRecursive,
-        MinHeap,
-        QuickSelectIteration,
-    };
-
 public:
-#if 1
-    // 快速选择(递归)
-    // 时间复杂度: O(n) 空间复杂度: O(n) NOTE: 可以改为原地 O(1) 空间复杂度
-    // 随机选择基准数字, 划分 big equal small
+    // 快速选择
+    // 时间复杂度: O(n) 空间复杂度: O(1)
     int findKthLargest(vector<int>& nums, int k) {
-        // 随机选择基准元素
-        int p = nums[rand() % nums.size()];
-
-        // 遍历 nums 与基准元素比较分 small(<p) equal(=p) big(>p) 子数组
-        vector<int> big, equal, small;
-        for (auto& x : nums) {
-            x > p ? big.push_back(x) : (x < p ? small.push_back(x) : equal.push_back(x));
-        }
-        // 如果 k 小于 big 数组大小, 则说明第 k 大的元素在 big 中
-        if (k <= big.size()) {
-            return findKthLargest(big, k);
-        }
-
-        // 如果 k 大于 big + equal 数组大小之和, 则说明第 k 大的元素在 small 中
-        if (k > big.size() + equal.size()) {
-            return findKthLargest(small, k - big.size() - equal.size());  // NOTE: 这里得改 k
-        }
-
-        // 第 k 大在 equal 中 (即就是 p)
-        return p;
-    }
-
-#elif 0
-    // 最小堆
-    // 时间复杂度: O(nlogk) 空间复杂度: O(k)
-    int findKthLargest(vector<int>& nums, int k) {
-        // 维护大小为 k 的最小堆, 最终堆顶即第 k 大元素
-        priority_queue<int, vector<int>, greater<int> > min_heap;
-        for (auto& x : nums) {
-            min_heap.push(x);
-            if (min_heap.size() > k) {
-                min_heap.pop();
-            }
-        }
-        return min_heap.top();
-    }
-
-#else
-    int findKthLargest(std::vector<int>& nums, int k) {
+        static std::mt19937 gen{std::random_device{}()};
         int n = nums.size();
-        int target_idx = n - k;  // 第 k 大的元素，在升序排序后，索引是 n-k
-        int left = 0, right = n - 1;
-
-        // 使用静态的随机数生成器以获得更好的随机性
-        static std::mt19937 gen(std::random_device{}());
-
-        while (left <= right) {
-            // 随机选择 pivot 并交换到当前子数组的开头
-            std::uniform_int_distribution<int> distrib(left, right);
-            int pivot_idx = distrib(gen);
-            std::swap(nums[left], nums[pivot_idx]);
-
-            int pivot_val = nums[left];
-            int i = left;
-            int j = right;
-
-            // Hoare partition scheme 的变种
-            while (i < j) {
-                while (i < j && nums[j] >= pivot_val) {
-                    j--;
-                }
-                while (i < j && nums[i] <= pivot_val) {
-                    i++;
-                }
-                if (i < j) {
-                    std::swap(nums[i], nums[j]);
+        int target_idx = n - k;  // 第 k 大 = 第 n - k 小 (索引从 0 开始)
+        int l = 0, r = n - 1;
+        while (l <= r) {
+            // 随机选择 pivot
+            std::uniform_int_distribution<int> dist{l, r};
+            std::swap(nums[dist(gen)], nums[l]);  // 换到最左边
+            int pivot = nums[l];
+            // 三路分区
+            // [left...lt-1]  < pivot
+            // [lt...i-1]     == pivot
+            // [i...gt]       未处理
+            // [gt+1...right] > pivot
+            int lt = l;  // lt: 指向“小于”部分的下一个位置
+            int gt = r;  // gt: 指向“大于”部分的前一个位置
+            int i = l;   // i: 当前遍历的元素指针
+            while (i <= gt) {
+                if (nums[i] < pivot) {  // 第一路
+                    std::swap(nums[lt], nums[i]);
+                    // NOTE: 左边的是旧 i 已经处理过了, 所以 lt 和 i 都 ++
+                    ++lt;
+                    ++i;
+                } else if (nums[i] > pivot) {  // 第二路
+                    std::swap(nums[i], nums[gt]);
+                    // NOTE: 右边换过来的是新 i 还没处理, 所以只有 gt--
+                    --gt;
+                } else {  // 第三路
+                    ++i;
                 }
             }
-            std::swap(nums[left], nums[i]);
-
-            // 检查 pivot 的最终位置
-            if (i == target_idx) {
-                return nums[i];
-            } else if (i < target_idx) {
-                left = i + 1;  // 目标在右半部分
-            } else {
-                right = i - 1;  // 目标在左半部分
+            // NOTE: 接下来就是比较 target_idx 在哪个分区
+            if (target_idx < lt) {  // 小分区
+                r = lt - 1;
+            } else if (target_idx > gt) {  // 大分区
+                l = gt + 1;
+            } else {  // 就在等于分区
+                return pivot;
             }
         }
-        return -1;  // 正常情况下不会执行到这里
+        return -1;
     }
-#endif
 };
 // @leet end
 

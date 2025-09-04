@@ -68,7 +68,7 @@ public:
         flatten(root->right);
         flatten(root->left);
         root->right = prev;    // 指向 prev
-        root->left = nullptr;  // 题目要求: 左指针始终 nullptr
+        root->left = nullptr;  // NOTE: 题目要求: 左指针始终 nullptr
         prev = root;           // 更新 prev
     }
 #else

@@ -52,10 +52,12 @@ public:
             if (!node) {
                 return 0;  // 思考: 求最大时有负数, 别干扰
             }
-            int left = dfs(node->left);                   // 左子树最大链和
-            int right = dfs(node->right);                 // 右子树最大链和
-            ans = max(ans, node->val + left + right);     // 更新最大路径和
-            return max(0, node->val + max(left, right));  // 返回当前节点最大链和(不要负数)
+            int left = dfs(node->left);                // 左子树最大链和
+            int right = dfs(node->right);              // 右子树最大链和
+            ans = max(ans, node->val + left + right);  // 更新最大路径和
+            // 返回当前节点最大链和(只有一条)
+            // NOTE: 对于当前节点返回给上层结果来说, 不要负数, 这是自己可以选择的
+            return max(0, node->val + max(left, right));
         };
         dfs(root);
         return ans;

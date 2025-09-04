@@ -42,6 +42,8 @@ using namespace std;
  */
 class Solution {
 public:
+    // 时间复杂度: O(n), n 为二叉树的节点个数
+    // 空间复杂度: O(n), 哈希表
     int pathSum(TreeNode* root, int targetSum) {
         int ans{0};
         int64_t pre_sum{0};
@@ -53,7 +55,7 @@ public:
             if (!node) {
                 return;
             }
-
+            // 先计算前缀和
             pre_sum += node->val;  // 中
             if (cnt.contains(pre_sum - targetSum)) {
                 ans += cnt[pre_sum - targetSum];
@@ -63,7 +65,7 @@ public:
             dfs(node->left);   // 左
             dfs(node->right);  // 右
 
-            --cnt[pre_sum];        // 恢复现场
+            --cnt[pre_sum];        // 恢复现场 NOTE: cnt 在前面, 因为pre_sum后面被修改
             pre_sum -= node->val;  // 恢复现场
         };
         dfs(root);

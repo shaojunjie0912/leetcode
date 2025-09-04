@@ -16,134 +16,43 @@ using namespace std;
  * };
  */
 
-// NOTE: 只有先序、后序和层序遍历才有唯一序列化反序列化
-// 中序存在相同树不同序列化结果的情况
-
 class Codec {
 public:
-#if 1
-    // ============== 层序 ==============
-    // HACK: 错觉? 层序比前序递归快且节省空间
-    // NOTE: 处理逻辑有点变化, 根据序列化的要求
-    // 不是每次处理一层，而是每次处理一个节点
-    //   1
-    // 2  3
-    //
-    // 1,2,3,#,#,#,#,
+    // NOTE: 前序遍历 + '#' 标记空节点 + 空格 ' ' 分隔数字
     string serialize(TreeNode* root) {
-        if (!root) {
-            return "";
-        }
-        ostringstream oss;
-        std::queue<TreeNode*> nodes;
-        nodes.push(root);
-        oss << root->val << ",";  // HACK:
-        while (!nodes.empty()) {
-            int size = nodes.size();
-            while (size--) {
-                auto node{nodes.front()};
-                nodes.pop();
-                // oss << node->val << ","; // NOTE: 这里没了
-                if (node->left) {
-                    nodes.push(node->left);
-                    oss << node->left->val << ",";  // NOTE: 记得将左节点加入字符流
-                } else {
-                    oss << "#,";
-                }
-                if (node->right) {
-                    nodes.push(node->right);
-                    oss << node->right->val << ",";  // NOTE: 记得将右节点加入字符流
-                } else {
-                    oss << "#,";
-                }
+        ostringstream oss;  // NOTE: 字符串流!!!
+        function<void(TreeNode*)> dfs = [&](TreeNode* node) -> void {
+            if (!node) {
+                // NOTE: 空节点用 '#' 表示, 分隔符是空格 ' '
+                oss << "# ";
+                return;
             }
-        }
+            // NOTE: oss 直接 << 不需要数字转字符串
+            oss << node->val << " ";  // 根 NOTE: ' ' 空格分隔符
+            dfs(node->left);          // 左
+            dfs(node->right);         // 右
+        };
+        dfs(root);
         return oss.str();
     }
 
-    //   1
-    // 2  3
-    //
-    // 1,2,3,#,#,#,#,
+    // NOTE: istringstream 自动跳过空格
     TreeNode* deserialize(string data) {
-        // NOTE: 使用队列存放节点
-        if (data.empty()) {
-            return nullptr;
-        }
-        istringstream iss{data};
-        string str_val;
-        getline(iss, str_val, ',');
-        // 获取根节点
-        auto root{Generate(str_val)};
-        queue<TreeNode*> nodes;  // HACK: !! 队列 !!
-        nodes.push(root);
-        while (!nodes.empty()) {
-            int size = nodes.size();
-            while (size--) {
-                auto node{nodes.front()};
-                nodes.pop();
-                // 解析左子节点
-                getline(iss, str_val, ',');
-                node->left = Generate(str_val);  // NOTE: 造左子节点
-                if (node->left) {
-                    nodes.push(node->left);  // NOTE: 非空子节点才入队
-                }
-                // 解析右子节点
-                getline(iss, str_val, ',');
-                node->right = Generate(str_val);  // NOTE: 造右子节点
-                if (node->right) {
-                    nodes.push(node->right);  // NOTE: 非空子节点才入队
-                }
-            }
-        }
-        return root;
-    }
-
-    TreeNode* Generate(string& str_val) {
-        return str_val == "#" ? nullptr : new TreeNode{stoi(str_val)};
-    }
-
-#else
-    // ============== 先序 ==============
-    // NOTE: 使用 istringstream & ostringstream 优化
-    // Encodes a tree to a single string.
-    string serialize(TreeNode* root) {
-        ostringstream oss;
-        PreOrderSe(root, oss);
-        return oss.str();
-    }
-
-    // 先序遍历序列化辅助函数
-    void PreOrderSe(TreeNode* root, ostringstream& oss) {
-        if (!root) {
-            oss << "#,";
-            return;  // NOTE: 递归别忘记 return
-        }
-        oss << root->val << ",";
-        PreOrderSe(root->left, oss);
-        PreOrderSe(root->right, oss);
-    }
-
-    // Decodes your encoded data to tree.
-    TreeNode* deserialize(string data) {
-        istringstream iss{data};
-        return PreOrderDese(iss);
-    }
-
-    // 先序遍历反序列化辅助函数
-    TreeNode* PreOrderDese(istringstream& iss) {
+        istringstream iss{data};  // 用 string 初始化 istringstream
         string val;
-        // NOTE: istringstream 是一个流, 内部维护了当前读取的位置
-        getline(iss, val, ',');  // HACK: 根据 ',' 获取其中字符串
-        if (val == "#") {
-            return nullptr;  // "#" 代表空
-        }
-        TreeNode* root{new TreeNode{stoi(val)}};  // 中
-        root->left = PreOrderDese(iss);           // 左
-        root->right = PreOrderDese(iss);          // 左
-        return root;
+        function<TreeNode*()> dfs = [&]() -> TreeNode* {
+            iss >> val;        // 从流中读取一个值
+            if (val == "#") {  // '#' 空节点
+                return nullptr;
+            }
+            // 根 NOTE: stoi 字符串转整数
+            auto node{new TreeNode{std::stoi(val)}};
+            node->left = dfs();   // 左 NOTE: 不需要传参, 遇到 '#' 就退出
+            node->right = dfs();  // 右 NOTE: 不需要传参, 遇到 '#' 就退出
+            return node;
+        };
+        return dfs();
     }
-#endif
 };
 
 // Your Codec object will be instantiated and called as such:
@@ -151,6 +60,4 @@ public:
 // TreeNode* ans = deser.deserialize(ser.serialize(root));
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

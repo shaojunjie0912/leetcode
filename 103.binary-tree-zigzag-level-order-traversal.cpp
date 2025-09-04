@@ -24,29 +24,29 @@ public:
             return {};
         }
         vector<vector<int>> ans;
-        queue<TreeNode*> nodes;
-        nodes.push(root);
-        while (!nodes.empty()) {
-            // ---------- 正常 bfs 添加 -------------
-            vector<int> layer;
-            int size = nodes.size();
+        queue<TreeNode*> q;
+        q.push(root);
+        while (!q.empty()) {
+            // 每一层
+            int size = q.size();
+            vector<int> v;
+            v.reserve(size);  // 预先分配大小
             while (size--) {
-                auto node{nodes.front()};
-                nodes.pop();
-                layer.push_back(node->val);
+                auto node{q.front()};
+                v.push_back(node->val);
+                q.pop();
                 if (node->left) {
-                    nodes.push(node->left);
+                    q.push(node->left);
                 }
                 if (node->right) {
-                    nodes.push(node->right);
+                    q.push(node->right);
                 }
             }
-            // -------------------------------------
-            // NOTE: 偶数层就反转当前层结果
-            if (ans.size() % 2) {
-                ranges::reverse(layer);
+            // 妙! 根据 ans 当前大小判断方向(是否需要反转)
+            if (ans.size() % 2 == 1) {
+                ranges::reverse(v);
             }
-            ans.push_back(std::move(layer));
+            ans.push_back(std::move(v));
         }
         return ans;
     }
@@ -98,6 +98,4 @@ public:
 //     return res;
 // }
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

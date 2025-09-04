@@ -23,8 +23,7 @@
 
 using namespace std;
 
-// 法一: 层序遍历: 每层数组最后一个
-// 法二: 递归: 当某个深度首次遇到(即数组目前大小=当前节点深度)时, 就是右视图的节点
+// 递归: 当某个深度首次遇到(即数组目前大小=当前节点深度)时, 就是右视图的节点
 
 // @leet start
 /**
@@ -40,34 +39,6 @@ using namespace std;
  */
 class Solution {
 public:
-#if 0
-    // 层序遍历
-    vector<int> rightSideView(TreeNode* root) {
-        if (!root) {
-            return {};
-        }
-        vector<int> ans;
-        queue<TreeNode*> q;
-        q.push(root);
-        while (!q.empty()) {
-            int size = q.size();
-            while (size--) {
-                auto node{q.front()};
-                q.pop();
-                if (size == 0) {  // NOTE: 上面 -- 了, 所以这边是 0
-                    ans.push_back(node->val);
-                }
-                if (auto l = node->left) {
-                    q.push(l);
-                }
-                if (auto r = node->right) {
-                    q.push(r);
-                }
-            }
-        }
-        return ans;
-    }
-#else
     // 递归
     vector<int> rightSideView(TreeNode* root) {
         vector<int> ans;
@@ -84,6 +55,5 @@ public:
         dfs(root, 0);
         return ans;
     }
-#endif
 };
 // @leet end

@@ -36,7 +36,7 @@ using namespace std;
  */
 class Solution {
     ListNode* Middle(ListNode* head) {
-        ListNode *slow = head, *fast = head;
+        auto slow{head}, fast{head};
         while (fast && fast->next) {
             slow = slow->next;
             fast = fast->next->next;
@@ -45,7 +45,8 @@ class Solution {
     }
 
     ListNode* Reverse(ListNode* head) {
-        ListNode *pre = nullptr, *cur = head;
+        ListNode* pre = nullptr;
+        auto cur{head};
         while (cur) {
             ListNode* nxt = cur->next;
             cur->next = pre;
@@ -60,13 +61,14 @@ public:
         auto mid{Middle(head)};
         auto head2{Reverse(mid)};
         // head ... -> mid <- ... head2
+        // NOTE: 不需要 curr 辅助变量, 本题不需要返回
         while (head2->next) {
             auto nxt{head->next};
             auto nxt2{head2->next};
-            head->next = head2;
+            head->next = head2;  // NOTE: 这里是 head2
             head2->next = nxt;
-            head = nxt;
-            head2 = nxt2;
+            head = nxt;    // 直接更新 head 反正不需要返回
+            head2 = nxt2;  // 直接更新 head2 反正不需要返回
         }
     }
 };

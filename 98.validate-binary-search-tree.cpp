@@ -104,7 +104,7 @@ private:
     // 从下往上传范围, 需要先遍历左右子树(获得左右子树最大值最小值), 再跟当前节点比较
     // 外部检查返回的范围
     pair<int64_t, int64_t> PostDfs(TreeNode* root) {
-        // 边界条件, 去除空节点影响
+        // 边界条件, 去除空节点影响, 代入得到: 确实满足
         // [l_min, l_max=INT64_MIN] < root->val < [r_min=INT64_MAX, r_max]
         if (!root) {
             return {INT64_MAX, INT64_MIN};
@@ -116,7 +116,7 @@ private:
         // 注意这里的条件 >= 因为搜索二叉树严格
         int64_t x = root->val;
         if (l_max >= x || x >= r_min) {
-            return {INT64_MIN, INT64_MAX};
+            return {INT64_MIN, INT64_MAX};  // 分别代入, 不满足
         }
 
         // 空节点 l_min 为 INT64_MAX, r_max 为 INT64_MIN, 如果直接往上传, 则就不对了

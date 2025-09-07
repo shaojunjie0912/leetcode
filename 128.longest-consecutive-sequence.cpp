@@ -35,7 +35,7 @@ public:
         // 数组中可能有重复元素, 因此应该遍历集合
         for (auto x : set) {
             // 只有当 x 是起点 (即 x-1 不在 set 中) 时, 才往后找
-            if (!set.contains(x - 1)) {
+            if (!set.contains(x - 1)) {  // NOTE: 这里是 if !!
                 int len = 1;
                 while (set.contains(x + 1)) {
                     ++len;

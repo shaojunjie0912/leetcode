@@ -9,13 +9,22 @@ using namespace std;
 // @leet start
 class Solution {
 public:
-    int searchInsert(vector<int>& nums, int target) {
-        // 第一个 >= x 的位置 NOTE: 标准库算法返回 iterator
-        return ranges::lower_bound(nums, target) - begin(nums);
+    int searchInsert(vector<int>& nums, int target) { return LowerBound(nums, target); }
+
+    int LowerBound(vector<int>& nums, int target) {
+        int n = nums.size();
+        int l = 0, r = n - 1;
+        while (l <= r) {
+            int m = l + (r - l) / 2;
+            if (nums[m] < target) {
+                l = m + 1;
+            } else {
+                r = m - 1;
+            }
+        }
+        return l;
     }
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

@@ -21,7 +21,7 @@ public:
             return {-1, -1};
         }
         // end: [..., x-3, x, x, x, x+2, ...] 第一个 >= x+1 的左边那个数
-        int end = LowerBound(nums, target + 1) - 1;
+        int end = LowerBound(nums, target + 1) - 1;  // NOTE: 索引 - 1 妙啊
         return {begin, end};
     }
 

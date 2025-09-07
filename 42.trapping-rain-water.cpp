@@ -21,14 +21,14 @@ public:
 
         // 前缀最大值数组
         vector<int> pre_max(n);
-        pre_max[0] = height[0];  // 第 0 个直接得到
+        pre_max[0] = height[0];  // NOTE: 是 height[0]
         for (int i{1}; i < n; ++i) {
             pre_max[i] = max(height[i], pre_max[i - 1]);  // NOTE: 比较当前 nums[i] 和 pre_max[i-1]
         }
 
         // 后缀最大值数组
         vector<int> suf_max(n);
-        suf_max[n - 1] = height[n - 1];  // 第 n - 1 个直接得到
+        suf_max[n - 1] = height[n - 1];  // NOTE: 是 height[n-1]
         for (int j{n - 2}; j >= 0; --j) {
             suf_max[j] = max(height[j], suf_max[j + 1]);  // NOTE: 比较当前 nums[i] 和 suf_max[j+1]
         }

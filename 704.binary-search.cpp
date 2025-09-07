@@ -24,20 +24,20 @@ public:
     int search(vector<int>& nums, int target) {
         int l = LowerBound(nums, target);
         return (l < nums.size() && nums[l] == target) ? l : -1;  // [0, n-1] 要判断 2 个条件
-        // return (nums[l] == target) ? l : -1;                     // [0, n-2] 只要 1 个条件
     }
 
 private:
     int LowerBound(vector<int>& nums, int target) {
         int l = 0;
         int r = nums.size() - 1;  // [0, n-1]
-        // int r = nums.size() - 2; // [0, n-2]
         while (l <= r) {
-            int mid = l + (r - l) / 2;
-            if (nums[mid] >= target) {  // 当前及右边是蓝色, 需要往左
-                r = mid - 1;
-            } else {  // 当前及左边是红色, 需要往右
-                l = mid + 1;
+            int m = l + (r - l) / 2;
+            if (nums[m] < target) {
+                // 当前及左边是红色, 需要往右
+                l = m + 1;
+            } else {
+                // 当前及右边是蓝色, 需要往左
+                r = m - 1;
             }
         }
         return l;
@@ -45,6 +45,4 @@ private:
 };
 // @leet end
 
-int main() {
-    return 0;
-}
+int main() { return 0; }

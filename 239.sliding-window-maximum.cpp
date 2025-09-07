@@ -7,6 +7,8 @@
 using namespace std;
 
 // NOTE: 双端队列中存放的是「索引」！
+// 1. 维护双端队列单调性(递减)
+// 2. 维护窗口有效性
 
 // @leet start
 class Solution {
@@ -15,12 +17,13 @@ public:
         vector<int> ans;
         deque<int> q;  // 单调双端队列 (递减) 存放对应元素索引
         for (int i = 0; i < nums.size(); ++i) {
-            // 1. 维护单调性
+            // 1. 维护单调性 (其实就是更新最大值)
             // 如果入的值大于队列尾 q.back() 则队列一直弹出尾
             // 要维持队列单调递减
             while (!q.empty() && nums[i] >= nums[q.back()]) {
                 q.pop_back();
             }
+            // 入
             q.push_back(i);  // 把入的值加入队列尾
 
             // 2. 维护窗口有效性

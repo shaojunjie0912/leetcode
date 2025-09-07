@@ -21,7 +21,9 @@
 
 using namespace std;
 
-// 顺时针螺旋顺序: 右->下->左->上
+// 顺时针螺旋顺序: 右->下->左->上 (4 x 2 方向数组, 刚开始 dir = 0)
+// NOTE: 已经知道了一共有 m*n 个了, 用 k 做循环次数
+// 计算下一步的位置, 如果要换方向就更改 dir
 
 // @leet start
 class Solution {
@@ -39,15 +41,15 @@ public:
         int n = matrix[0].size();
         vector<int> ans(m * n);
 
-        int i = 0, j = 0;
-        int di = 0;  // 方向选择, 开始是右, 然后 (di+1)%4 代表右转 90°
+        int i = 0, j = 0;  // 从左上角 (0, 0) 开始
+        int di = 0;        // 方向选择, 开始是右, 然后 (di+1)%4 代表右转 90°
 
         // 开始填充 m * n 个元素
         for (int k = 0; k < m * n; ++k) {
             ans[k] = matrix[i][j];
             matrix[i][j] = INT_MAX;  // 标记已访问
 
-            // 计算下一步位置
+            // 计算下一步位置 NOTE: 还不是真正更新
             int x = i + DIRS[di][0];
             int y = j + DIRS[di][1];
 
@@ -55,6 +57,8 @@ public:
             if ((x < 0 || x >= m || y < 0 || y >= n) || matrix[x][y] == INT_MAX) {
                 di = (di + 1) % 4;
             }
+
+            // NOTE: 真正更新
             i += DIRS[di][0];
             j += DIRS[di][1];
         }

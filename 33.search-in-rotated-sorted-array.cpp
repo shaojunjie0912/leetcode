@@ -32,7 +32,7 @@ public:
             } else {  // x 在第二段
                 // 要想 x 在 target 左侧, 必须 target 也在第二段, 且 x < target
                 // NOTE: <= end
-                return target <= end && x < target;
+                return x < target && target <= end;
             }
         };
 

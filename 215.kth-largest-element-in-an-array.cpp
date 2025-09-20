@@ -10,14 +10,14 @@ using namespace std;
 // NOTE: 不能用 Partition 会退化到 n^2, 而且每次只能分两路
 // 这道题必须用「三路分区」!!
 // 整个区间: left = 0, right = n-1
-// lt: <小区间>的后一个
-// gt: <大区间>的前一个
+// lt: 小区间的后一个
+// gt: 大区间的前一个
 // i: 当前处理的元素
 // [left...lt-1]  < pivot
 // [lt...i-1]     == pivot
 // [i...gt]       未处理
 // [gt+1...right] > pivot
-//
+// left...lt-1 lt...i-1 i...gt gt+1...right
 
 // @leet start
 class Solution {
@@ -32,16 +32,17 @@ public:
         while (l <= r) {
             // 随机选择 pivot
             std::uniform_int_distribution<int> dist{l, r};
-            std::swap(nums[dist(gen)], nums[l]);  // 换到最左边
+            std::swap(nums[dist(gen)], nums[l]);  // 把 pivot 换到最左边
             int pivot = nums[l];
+
             // 三路分区
-            // [left...lt-1]  < pivot
-            // [lt...i-1]     == pivot
-            // [i...gt]       未处理
-            // [gt+1...right] > pivot
+            //    小区间     等于区间  未处理   大于区间
+            // left...lt-1  lt...i-1  i...gt  gt+1...right
             int lt = l;  // lt: 指向“小于”部分的下一个位置
             int gt = r;  // gt: 指向“大于”部分的前一个位置
             int i = l;   // i: 当前遍历的元素指针
+
+            // NOTE: 开始分区->注意循环条件
             while (i <= gt) {
                 if (nums[i] < pivot) {  // 第一路
                     std::swap(nums[lt], nums[i]);

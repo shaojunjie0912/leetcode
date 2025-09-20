@@ -27,6 +27,7 @@ public:
     vector<int> topKFrequent(vector<int>& nums, int k) {
         unordered_map<int, int> cnt;  // 元素值:出现次数
         int max_cnt = 0;              // 最大出现次数
+        // NOTE: 统计出现次数 + 更新最大出现次数!!
         for (auto& x : nums) {
             ++cnt[x];
             max_cnt = max(max_cnt, cnt[x]);
